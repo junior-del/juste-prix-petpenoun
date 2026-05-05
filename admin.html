@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Le Juste Prix Petpenoun</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--r:#C0392B;--rd:#922B21;--g:#27AE60;--b:#2980B9;--or:#F39C12;--n:#0d0d0d;--s:#1a1a1a;--c:#242424;--t:#F0F0F0;--m:#888;--w:#FFF;--rad:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',sans-serif;background:var(--n);color:var(--t);min-height:100vh}
+
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:var(--s);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px;width:100%;max-width:400px;text-align:center}
+.login-card h1{font-family:'Bebas Neue',cursive;font-size:2.5rem;color:var(--or);letter-spacing:3px;margin-bottom:8px}
+.login-card p{font-size:.85rem;color:var(--m);margin-bottom:24px}
+input[type=password]{width:100%;background:#111;border:1.5px solid rgba(255,255,255,.12);border-radius:10px;color:var(--t);font-family:'Montserrat',sans-serif;font-size:1rem;padding:12px 16px;outline:none;margin-bottom:12px}
+input[type=password]:focus{border-color:var(--or)}
+
+/* MAIN LAYOUT */
+.main{display:none;flex-direction:column;height:100vh;overflow:hidden}
+
+/* TOP BAR */
+.topbar{background:linear-gradient(135deg,var(--rd),#1a0808);padding:12px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.topbar h1{font-family:'Bebas Neue',cursive;font-size:1.8rem;letter-spacing:2px;color:var(--w)}
+.phase-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 16px;font-size:.8rem;font-weight:700;color:var(--or);letter-spacing:1px;text-transform:uppercase}
+.teams-count{font-size:.8rem;color:rgba(255,255,255,.6);margin-left:auto}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g)}
+
+/* CONTENT */
+.content{display:flex;flex:1;overflow:hidden}
+
+/* LEFT PANEL */
+.left-panel{width:320px;background:var(--s);border-right:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;flex-shrink:0}
+.panel-title{padding:14px 18px;font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:2px;color:var(--or);border-bottom:1px solid rgba(255,255,255,.07);background:var(--c);display:flex;align-items:center;justify-content:space-between}
+.teams-list{flex:1;overflow-y:auto;padding:8px}
+.teams-list::-webkit-scrollbar{width:4px}
+.teams-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+
+.team-item{background:var(--c);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;transition:border-color .2s}
+.team-item.eliminated{opacity:.35;border-color:rgba(192,57,43,.3)}
+.team-item.winner{border-color:var(--or);background:rgba(243,156,18,.08)}
+.team-rank{font-family:'Bebas Neue',cursive;font-size:1.3rem;color:var(--m);width:24px;text-align:center;flex-shrink:0}
+.team-info{flex:1;min-width:0}
+.team-name-el{font-weight:700;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team-players{font-size:.7rem;color:var(--m);margin-top:1px}
+.team-score{font-family:'Bebas Neue',cursive;font-size:1.4rem;color:var(--or);flex-shrink:0}
+.elim-btn{background:none;border:1px solid rgba(192,57,43,.4);border-radius:6px;color:#e74c3c;font-size:.7rem;font-weight:600;cursor:pointer;padding:3px 8px;transition:all .2s;flex-shrink:0}
+.elim-btn:hover{background:rgba(192,57,43,.2)}
+
+/* RIGHT PANEL */
+.right-panel{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+
+/* CONTROL CARD */
+.ctrl-card{background:var(--s);border:1px solid rgba(255,255,255,.08);border-radius:var(--rad);padding:20px}
+.ctrl-title{font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:2px;color:var(--or);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.ctrl-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+
+/* BUTTONS */
+.btn{padding:12px 20px;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.5px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn-red{background:linear-gradient(135deg,var(--r),var(--rd));color:var(--w);box-shadow:0 4px 15px rgba(192,57,43,.3)}
+.btn-green{background:linear-gradient(135deg,#27AE60,#1e8449);color:var(--w);box-shadow:0 4px 15px rgba(39,174,96,.3)}
+.btn-gold{background:linear-gradient(135deg,var(--or),#d68910);color:#1a0a00;box-shadow:0 4px 15px rgba(243,156,18,.3)}
+.btn-blue{background:linear-gradient(135deg,#2980B9,#1a5276);color:var(--w);box-shadow:0 4px 15px rgba(41,128,185,.3)}
+.btn-outline{background:transparent;border:1.5px solid rgba(255,255,255,.15);color:var(--m)}
+.btn-danger{background:linear-gradient(135deg,#7B241C,#4a1510);color:var(--w);border:1px solid rgba(192,57,43,.4)}
+.btn-full{width:100%}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.gap{height:10px}
+
+/* PRODUCT DISPLAY */
+.product-display{background:linear-gradient(135deg,#1e1e1e,#151515);border:1px solid rgba(255,255,255,.1);border-radius:var(--rad);padding:20px;text-align:center}
+.product-big-emoji{font-size:5rem;display:block;margin-bottom:10px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+.product-big-name{font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:3px;color:var(--w);margin-bottom:4px}
+.product-big-desc{font-size:.85rem;color:var(--m);margin-bottom:14px}
+.price-reveal{display:none;background:linear-gradient(135deg,#1e8449,#145a32);border-radius:10px;padding:12px 20px;margin-top:12px}
+.price-reveal .price-val{font-family:'Bebas Neue',cursive;font-size:2.5rem;color:var(--w);letter-spacing:2px}
+.price-reveal .price-lbl{font-size:.75rem;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase}
+
+/* ANSWERS TABLE */
+.answers-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.answers-table th{background:var(--c);padding:8px 12px;text-align:left;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--m);border-bottom:1px solid rgba(255,255,255,.07)}
+.answers-table td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.05)}
+.answers-table tr:hover td{background:rgba(255,255,255,.03)}
+.pts-badge{display:inline-block;background:rgba(243,156,18,.15);border:1px solid rgba(243,156,18,.3);border-radius:4px;padding:1px 8px;font-weight:700;color:var(--or);font-size:.78rem}
+.pts-badge.zero{background:rgba(192,57,43,.12);border-color:rgba(192,57,43,.3);color:#e74c3c}
+.pts-badge.max{background:rgba(39,174,96,.15);border-color:rgba(39,174,96,.3);color:var(--g)}
+
+/* STEP TABS */
+.step-tabs{display:flex;gap:6px;margin-bottom:14px}
+.step-tab{padding:7px 16px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:transparent;color:var(--m);font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s}
+.step-tab.active{border-color:var(--or);background:rgba(243,156,18,.1);color:var(--or)}
+
+/* VITRINE */
+.vitrine-grid-admin{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.vitrine-box{background:var(--c);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;text-align:center}
+.vitrine-box-emoji{font-size:2rem;display:block;margin-bottom:6px}
+.vitrine-box-name{font-size:.72rem;font-weight:600;color:var(--t);margin-bottom:4px}
+.vitrine-box-price{font-size:.7rem;color:var(--m)}
+.vitrine-total-display{background:linear-gradient(135deg,rgba(243,156,18,.15),rgba(212,136,16,.1));border:2px solid var(--or);border-radius:10px;padding:14px;text-align:center}
+.vitrine-total-num{font-family:'Bebas Neue',cursive;font-size:2.5rem;color:var(--or);display:block}
+
+/* WHEEL ADMIN */
+.wheel-admin-wrap{display:flex;gap:20px;align-items:center}
+.wheel-scores{flex:1}
+.wheel-score-row{display:flex;justify-content:space-between;padding:6px 12px;background:var(--c);border-radius:6px;margin-bottom:4px;font-size:.85rem}
+
+/* ALERTS */
+.alert{border-radius:10px;padding:10px 14px;font-size:.85rem;margin-top:8px;display:none}
+.alert.show{display:block}
+.alert-err{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);color:#e74c3c}
+.alert-ok{background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.35);color:#2ecc71}
+.alert-info{background:rgba(243,156,18,.1);border:1px solid rgba(243,156,18,.3);color:var(--or)}
+
+input[type=text],input[type=number]{background:#111;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;color:var(--t);font-family:'Montserrat',sans-serif;font-size:.9rem;padding:10px 14px;outline:none;}
+input:focus{border-color:var(--or)}
+select{background:#111;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;color:var(--t);font-family:'Montserrat',sans-serif;font-size:.85rem;padding:8px 12px;outline:none;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <h1>🎯 Admin</h1>
+    <p>Le Juste Prix · Domaine de Petpenoun</p>
+    <input type="password" id="pwdInput" placeholder="Mot de passe admin…"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn btn-gold btn-full" onclick="doLogin()">Connexion</button>
+    <div class="alert alert-err show" id="loginErr" style="display:none"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="main" id="mainApp">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <h1>🎯 Le Juste Prix</h1>
+    <div class="phase-badge" id="phaseBadge">Lobby</div>
+    <div class="teams-count" id="teamsCount">0 équipes</div>
+    <div class="status-dot"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- LEFT: TEAMS -->
+    <div class="left-panel">
+      <div class="panel-title">
+        Équipes
+        <button class="btn btn-danger" style="font-size:.65rem;padding:4px 8px" onclick="resetGame()">🗑 Reset</button>
+      </div>
+      <div class="teams-list" id="teamsList"></div>
+    </div>
+
+    <!-- RIGHT: CONTROLS -->
+    <div class="right-panel">
+
+      <!-- PHASE CONTROL -->
+      <div class="ctrl-card">
+        <div class="ctrl-title">Contrôle du jeu</div>
+        <div class="step-tabs">
+          <button class="step-tab active" onclick="showPhase('lobby')">Lobby</button>
+          <button class="step-tab" onclick="showPhase('step1')">Étape 1</button>
+          <button class="step-tab" onclick="showPhase('step2')">Étape 2</button>
+          <button class="step-tab" onclick="showPhase('step3')">Étape 3</button>
+          <button class="step-tab" onclick="showPhase('step4')">Vitrine</button>
+        </div>
+
+        <!-- LOBBY -->
+        <div id="phLobby">
+          <p style="font-size:.85rem;color:var(--m);margin-bottom:14px">
+            Attendez que les 20 équipes s'inscrivent, puis lancez l'Étape 1.
+          </p>
+          <button class="btn btn-green btn-full" onclick="startStep1()">▶ Lancer l'Étape 1</button>
+        </div>
+
+        <!-- STEP 1 CONTROLS -->
+        <div id="phStep1" style="display:none">
+          <p style="font-size:.82rem;color:var(--m);margin-bottom:12px">
+            Produit actuel : <strong id="s1CurrentLabel" style="color:var(--or)">—</strong>
+          </p>
+          <div class="product-display" id="s1ProductDisplay" style="display:none">
+            <span class="product-big-emoji" id="s1Emoji"></span>
+            <div class="product-big-name" id="s1Name"></div>
+            <div class="product-big-desc" id="s1Desc"></div>
+            <div class="price-reveal" id="s1PriceReveal">
+              <div class="price-lbl">Prix réel</div>
+              <div class="price-val" id="s1PriceVal"></div>
+            </div>
+          </div>
+          <div class="gap"></div>
+          <div class="btn-row">
+            <button class="btn btn-blue" onclick="prevProduct()">◀ Précédent</button>
+            <button class="btn btn-gold" onclick="revealPrice()">💰 Révéler le prix</button>
+            <button class="btn btn-green" onclick="nextProduct()">▶ Suivant</button>
+          </div>
+          <div class="gap"></div>
+          <div class="btn-row">
+            <button class="btn btn-red" onclick="eliminateBottom10()">❌ Éliminer 10 équipes</button>
+            <button class="btn btn-blue" onclick="goToStep2()">→ Étape 2</button>
+          </div>
+          <div class="alert alert-ok" id="s1elimOk"></div>
+          <div class="alert alert-err" id="s1elimErr"></div>
+          <div class="gap"></div>
+          <!-- Answers live -->
+          <div class="ctrl-title" style="margin-top:8px">Réponses en direct</div>
+          <div id="s1Answers"></div>
+        </div>
+
+        <!-- STEP 2 CONTROLS -->
+        <div id="phStep2" style="display:none">
+          <p style="font-size:.82rem;color:var(--m);margin-bottom:12px">
+            Les équipes ont 20 secondes pour associer chaque produit à son prix.
+          </p>
+          <div class="btn-row">
+            <button class="btn btn-red" onclick="startStep2Timer()">⏱ Lancer le chrono (20s)</button>
+            <button class="btn btn-gold" onclick="showStep2Results()">📊 Voir les résultats</button>
+          </div>
+          <div class="gap"></div>
+          <div class="btn-row">
+            <button class="btn btn-red" onclick="eliminateBottom5()">❌ Éliminer 5 équipes</button>
+            <button class="btn btn-blue" onclick="goToStep3()">→ Étape 3</button>
+          </div>
+          <div class="alert alert-ok" id="s2elimOk"></div>
+          <div id="s2Results" style="margin-top:12px;display:none"></div>
+        </div>
+
+        <!-- STEP 3 CONTROLS -->
+        <div id="phStep3" style="display:none">
+          <p style="font-size:.82rem;color:var(--m);margin-bottom:12px">
+            Chaque équipe lance la roue 2 fois depuis leur smartphone.<br>
+            Meilleur score sans dépasser 100 gagne.
+          </p>
+          <div class="ctrl-title" style="margin-top:0">Scores roue en direct</div>
+          <div id="s3Scores" class="wheel-scores"></div>
+          <div class="gap"></div>
+          <div class="btn-row">
+            <button class="btn btn-red" onclick="keepBestWheel()">🏆 Garder le meilleur</button>
+            <button class="btn btn-blue" onclick="goToStep4()">→ La Vitrine</button>
+          </div>
+          <div class="alert alert-ok" id="s3ok"></div>
+        </div>
+
+        <!-- STEP 4 VITRINE CONTROLS -->
+        <div id="phStep4" style="display:none">
+          <div class="vitrine-grid-admin" id="vitrineGrid"></div>
+          <div class="vitrine-total-display">
+            <span style="font-size:.72rem;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:4px">Total de la vitrine</span>
+            <span class="vitrine-total-num" id="vitrineTotalNum">???</span>
+          </div>
+          <div class="gap"></div>
+          <div class="btn-row">
+            <button class="btn btn-gold" onclick="revealVitrineTotal()">💰 Révéler le total</button>
+          </div>
+          <div class="gap"></div>
+          <div class="ctrl-title">Estimation du finaliste</div>
+          <div id="s4GuessDisplay" style="font-size:.9rem;color:var(--m)">En attente…</div>
+          <div class="gap"></div>
+          <div class="btn-row">
+            <button class="btn btn-green" onclick="declareWinner()">🏆 Déclarer gagnant</button>
+            <button class="btn btn-red" onclick="endGame()">🏁 Fin du jeu</button>
+          </div>
+          <div class="alert alert-ok" id="s4ok"></div>
+        </div>
+
+      </div>
+
+    </div><!-- /right-panel -->
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, update, remove, onValue }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyCZqCc67nk96aZxUj6WM7APLdpeWiQ1qno",
+  authDomain:"amis-invisibles-deb66.firebaseapp.com",
+  databaseURL:"https://amis-invisibles-deb66-default-rtdb.firebaseio.com",
+  projectId:"amis-invisibles-deb66"
+};
+const ADMIN_PWD="petpenoun2026";
+
+const PRODUCTS_S1=[
+  {id:'p1',name:'Vélo de montagne adulte',emoji:'🚲',desc:'VTT 26 pouces, 21 vitesses, freins à disques',price:45000},
+  {id:'p2',name:'Sac à dos randonnée 40L',emoji:'🎒',desc:'Imperméable, rembourré, bretelles réglables',price:22000},
+  {id:'p3',name:'Casque de cyclisme adulte',emoji:'⛑️',desc:'Certifié CE, 16 évents, visière amovible',price:18500},
+  {id:'p4',name:'Tente camping 4 personnes',emoji:'⛺',desc:'Montage rapide, waterproof, double toit',price:55000},
+  {id:'p5',name:'Gourde isotherme 750ml',emoji:'🧴',desc:'Inox double paroi, froid 24h / chaud 12h',price:8900},
+  {id:'p6',name:'Montre GPS sport',emoji:'⌚',desc:'Suivi cardiaque, 50 sports, GPS 14h',price:55000},
+  {id:'p7',name:'Lampe frontale LED',emoji:'🔦',desc:'300 lumens, étanche IPX4, autonomie 8h',price:12000},
+  {id:'p8',name:'Matelas autogonflant',emoji:'🛏️',desc:'Épaisseur 5cm, léger 800g',price:28000},
+  {id:'p9',name:'Kit réparation vélo',emoji:'🔧',desc:'Démonte-pneu, rustines, pompe, multi-outil',price:9500},
+  {id:'p10',name:'Lunettes sport polarisées',emoji:'🕶️',desc:'UV400, verres interchangeables, TR90',price:12000},
+];
+const PRODUCTS_S2=[
+  {id:'s2p1',name:'Sacoche vélo guidon',emoji:'👜',price:25000},
+  {id:'s2p2',name:'Gants cyclisme',emoji:'🧤',price:7500},
+  {id:'s2p3',name:'Pompe télescopique',emoji:'💨',price:9000},
+  {id:'s2p4',name:'Sac de couchage -10°C',emoji:'🛌',price:35000},
+  {id:'s2p5',name:'Chaussures randonnée',emoji:'👟',price:42000},
+  {id:'s2p6',name:'Lanterne LED camping',emoji:'🏮',price:6500},
+  {id:'s2p7',name:'Couverture de survie',emoji:'🟡',price:4500},
+  {id:'s2p8',name:'Carnet de route',emoji:'📔',price:3500},
+];
+const VITRINE=[
+  {id:'v1',name:'Vélo électrique pliant',emoji:'⚡',desc:'Moteur 250W, autonomie 60km',price:180000},
+  {id:'v2',name:'Kit camping premium',emoji:'🏕️',desc:'Tente + sacs + matelas + lampe',price:95000},
+  {id:'v3',name:'Montre connectée',emoji:'⌚',desc:'GPS, cardio, saphir',price:85000},
+  {id:'v4',name:'Sac trekking 60L',emoji:'🎒',desc:'Armature alu, poche hydratation',price:65000},
+  {id:'v5',name:'Coffret bien-être',emoji:'🎁',desc:'Huiles, crèmes, kit soin',price:35000},
+];
+const VITRINE_TOTAL=VITRINE.reduce((s,p)=>s+p.price,0);
+
+function fmtF(n){return Number(n).toLocaleString('fr-FR')+' FCFA';}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+let db, allTeams={}, gameState={}, s1ProductIdx=0;
+
+// ── LOGIN ─────────────────────────────────────────────────
+window.doLogin=()=>{
+  if(document.getElementById('pwdInput').value===ADMIN_PWD){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('mainApp').style.display='flex';
+    initFirebase();
+  } else {
+    const e=document.getElementById('loginErr');
+    e.textContent='❌ Mot de passe incorrect.';e.style.display='block';
+  }
+};
+
+function initFirebase(){
+  const app=initializeApp(FIREBASE_CONFIG);
+  db=getDatabase(app);
+  onValue(ref(db,'game/teams'),snap=>{
+    allTeams=snap.val()||{};
+    renderTeams();
+    updateStep1Answers();
+    updateStep3Scores();
+    updateStep4Guess();
+  });
+  onValue(ref(db,'game/state'),snap=>{
+    gameState=snap.val()||{};
+    updatePhaseBadge();
+  });
+}
+
+function updatePhaseBadge(){
+  const labels={lobby:'Lobby',step1:'Étape 1',step2:'Étape 2',step3:'Étape 3',step4:'Vitrine',finished:'Terminé'};
+  document.getElementById('phaseBadge').textContent=labels[gameState.phase]||'Lobby';
+}
+
+// ── TEAMS RENDER ──────────────────────────────────────────
+function renderTeams(){
+  const list=Object.entries(allTeams).filter(([,t])=>!t.eliminated)
+    .sort(([,a],[,b])=>(b.score||0)-(a.score||0));
+  const elim=Object.entries(allTeams).filter(([,t])=>t.eliminated);
+  const all=[...list,...elim];
+  document.getElementById('teamsCount').textContent=`${list.length} équipes actives`;
+
+  document.getElementById('teamsList').innerHTML=all.map(([id,t],i)=>`
+    <div class="team-item ${t.eliminated?'eliminated':i===0&&list.length?'winner':''}">
+      <div class="team-rank">${t.eliminated?'✕':i+1}</div>
+      <div class="team-info">
+        <div class="team-name-el">${esc(t.name)}</div>
+        <div class="team-players">${esc(t.player1)} & ${esc(t.player2)}</div>
+      </div>
+      <div class="team-score">${t.score||0}</div>
+      ${!t.eliminated?`<button class="elim-btn" onclick="eliminateTeam('${id}')">Élim.</button>`:''}
+    </div>`).join('');
+}
+
+// ── PHASE TABS ────────────────────────────────────────────
+window.showPhase=(p)=>{
+  ['lobby','step1','step2','step3','step4'].forEach(ph=>{
+    document.getElementById('ph'+ph.charAt(0).toUpperCase()+ph.slice(1)).style.display=ph===p?'':'none';
+  });
+  document.querySelectorAll('.step-tab').forEach((t,i)=>{
+    t.classList.toggle('active',['lobby','step1','step2','step3','step4'][i]===p);
+  });
+};
+
+// ── STEP 1 ────────────────────────────────────────────────
+window.startStep1=async()=>{
+  await set(ref(db,'game/state'),{phase:'step1',currentProduct:0,currentStep:1});
+  showPhase('step1');
+  renderS1Product(0);
+};
+
+function renderS1Product(idx){
+  s1ProductIdx=idx;
+  const p=PRODUCTS_S1[idx];
+  if(!p)return;
+  document.getElementById('s1ProductDisplay').style.display='';
+  document.getElementById('s1Emoji').textContent=p.emoji;
+  document.getElementById('s1Name').textContent=p.name;
+  document.getElementById('s1Desc').textContent=p.desc;
+  document.getElementById('s1PriceReveal').style.display='none';
+  document.getElementById('s1CurrentLabel').textContent=`${p.name} (${idx+1}/${PRODUCTS_S1.length})`;
+  update(ref(db,'game/state'),{currentProduct:idx});
+}
+
+window.nextProduct=()=>{ if(s1ProductIdx<PRODUCTS_S1.length-1) renderS1Product(s1ProductIdx+1); };
+window.prevProduct=()=>{ if(s1ProductIdx>0) renderS1Product(s1ProductIdx-1); };
+window.revealPrice=()=>{
+  const p=PRODUCTS_S1[s1ProductIdx];
+  document.getElementById('s1PriceReveal').style.display='';
+  document.getElementById('s1PriceVal').textContent=fmtF(p.price);
+  // Update scores for this product
+  Object.entries(allTeams).forEach(([id,t])=>{
+    if(t.eliminated)return;
+    const ans=t.s1Answers?.[s1ProductIdx];
+    if(ans){
+      const newScore=(t.score||0)+( ans.points||0);
+      update(ref(db,`game/teams/${id}`),{score:newScore});
+    }
+  });
+};
+
+function updateStep1Answers(){
+  const idx=gameState.currentProduct||0;
+  const rows=Object.entries(allTeams)
+    .filter(([,t])=>!t.eliminated)
+    .sort(([,a],[,b])=>(b.score||0)-(a.score||0));
+  const el=document.getElementById('s1Answers');
+  if(!el)return;
+  el.innerHTML=`<table class="answers-table"><thead><tr>
+    <th>Équipe</th><th>Estimation</th><th>Points</th><th>Total</th>
+    </tr></thead><tbody>
+    ${rows.map(([,t])=>{
+      const ans=t.s1Answers?.[idx];
+      const pts=ans?.points||0;
+      const guess=ans?.guess||0;
+      return `<tr>
+        <td><strong>${esc(t.name)}</strong></td>
+        <td>${guess>0?fmtF(guess):'—'}</td>
+        <td><span class="pts-badge ${pts===0?'zero':pts===5?'max':''}">${pts} pts</span></td>
+        <td style="font-weight:700;color:var(--or)">${t.score||0}</td>
+      </tr>`;
+    }).join('')}
+    </tbody></table>`;
+}
+
+window.eliminateBottom10=async()=>{
+  const active=Object.entries(allTeams).filter(([,t])=>!t.eliminated)
+    .sort(([,a],[,b])=>(b.score||0)-(a.score||0));
+  if(active.length<=10){
+    const e=document.getElementById('s1elimErr');
+    e.textContent='Pas assez d\'équipes actives !';e.classList.add('show');return;
+  }
+  const toElim=active.slice(10);
+  for(const [id] of toElim){
+    await update(ref(db,`game/teams/${id}`),{eliminated:true});
+  }
+  const ok=document.getElementById('s1elimOk');
+  ok.textContent=`✅ ${toElim.length} équipes éliminées. 10 équipes restantes.`;ok.classList.add('show');
+};
+
+window.goToStep2=async()=>{
+  await set(ref(db,'game/state'),{phase:'step2',currentStep:2});
+  showPhase('step2');
+};
+
+// ── STEP 2 ────────────────────────────────────────────────
+window.startStep2Timer=async()=>{
+  await update(ref(db,'game/state'),{s2Started:true,s2StartTime:Date.now()});
+};
+
+window.showStep2Results=()=>{
+  const active=Object.entries(allTeams).filter(([,t])=>!t.eliminated)
+    .sort(([,a],[,b])=>(b.s2Correct||0)-(a.s2Correct||0));
+  document.getElementById('s2Results').style.display='';
+  document.getElementById('s2Results').innerHTML=`
+    <table class="answers-table"><thead><tr>
+      <th>Équipe</th><th>Bonnes assoc.</th><th>Pts étape 2</th><th>Total</th>
+    </tr></thead><tbody>
+    ${active.map(([,t])=>`<tr>
+      <td><strong>${esc(t.name)}</strong></td>
+      <td>${t.s2Correct||0} / ${PRODUCTS_S2.length}</td>
+      <td><span class="pts-badge ${!t.s2Correct?'zero':'max'}">${(t.s2Correct||0)*2} pts</span></td>
+      <td style="font-weight:700;color:var(--or)">${t.score||0}</td>
+    </tr>`).join('')}
+    </tbody></table>`;
+};
+
+window.eliminateBottom5=async()=>{
+  const active=Object.entries(allTeams).filter(([,t])=>!t.eliminated)
+    .sort(([,a],[,b])=>(b.score||0)-(a.score||0));
+  if(active.length<=5){
+    alert('Pas assez d\'équipes !');return;
+  }
+  const toElim=active.slice(5);
+  for(const [id] of toElim) await update(ref(db,`game/teams/${id}`),{eliminated:true});
+  const ok=document.getElementById('s2elimOk');
+  ok.textContent=`✅ ${toElim.length} équipes éliminées. 5 équipes restantes.`;ok.classList.add('show');
+};
+
+window.goToStep3=async()=>{
+  await set(ref(db,'game/state'),{phase:'step3',currentStep:3});
+  showPhase('step3');
+};
+
+// ── STEP 3 ────────────────────────────────────────────────
+function updateStep3Scores(){
+  const active=Object.entries(allTeams).filter(([,t])=>!t.eliminated)
+    .sort(([,a],[,b])=>(b.s3Score||0)-(a.s3Score||0));
+  const el=document.getElementById('s3Scores');
+  if(!el)return;
+  el.innerHTML=active.map(([,t],i)=>`
+    <div class="wheel-score-row">
+      <span>${i===0?'🥇':i===1?'🥈':i===2?'🥉':''}  ${esc(t.name)}</span>
+      <strong style="color:${t.s3Score===0&&i>0?'var(--r)':'var(--or)'}">${t.s3Score||'—'} / 100</strong>
+    </div>`).join('');
+}
+
+window.keepBestWheel=async()=>{
+  const active=Object.entries(allTeams).filter(([,t])=>!t.eliminated)
+    .sort(([,a],[,b])=>(b.s3Score||0)-(a.s3Score||0));
+  if(active.length<=1){alert('Il reste déjà 1 équipe !');return;}
+  const toElim=active.slice(1);
+  for(const [id] of toElim) await update(ref(db,`game/teams/${id}`),{eliminated:true});
+  const ok=document.getElementById('s3ok');
+  ok.textContent=`🏆 Finaliste : ${active[0][1].name} avec ${active[0][1].s3Score} points !`;ok.classList.add('show');
+};
+
+window.goToStep4=async()=>{
+  await set(ref(db,'game/state'),{phase:'step4',currentStep:4});
+  showPhase('step4');
+  renderVitrineAdmin();
+};
+
+// ── STEP 4 VITRINE ────────────────────────────────────────
+function renderVitrineAdmin(){
+  document.getElementById('vitrineGrid').innerHTML=VITRINE.map(p=>`
+    <div class="vitrine-box">
+      <span class="vitrine-box-emoji">${p.emoji}</span>
+      <div class="vitrine-box-name">${esc(p.name)}</div>
+      <div class="vitrine-box-price">${fmtF(p.price)}</div>
+    </div>`).join('');
+}
+
+window.revealVitrineTotal=()=>{
+  document.getElementById('vitrineTotalNum').textContent=fmtF(VITRINE_TOTAL);
+};
+
+function updateStep4Guess(){
+  const finalTeam=Object.values(allTeams).find(t=>!t.eliminated);
+  const el=document.getElementById('s4GuessDisplay');
+  if(!el)return;
+  if(finalTeam?.s4Guess>0){
+    const diff=Math.abs(finalTeam.s4Guess-VITRINE_TOTAL);
+    const pct=Math.round(diff/VITRINE_TOTAL*100);
+    const won=finalTeam.s4Guess<=VITRINE_TOTAL;
+    el.innerHTML=`
+      <div style="font-size:1.2rem;font-weight:700;color:${won?'var(--or)':'var(--r)'}">${fmtF(finalTeam.s4Guess)}</div>
+      <div style="font-size:.8rem;color:var(--m);margin-top:4px">
+        Écart : ${fmtF(diff)} (${pct}%) · ${finalTeam.s4Guess>VITRINE_TOTAL?'<span style="color:var(--r)">⚠️ A dépassé le prix !</span>':'<span style="color:var(--g)">✅ Dans les limites</span>'}
+      </div>`;
+  }
+}
+
+window.declareWinner=async()=>{
+  const finalTeam=Object.entries(allTeams).find(([,t])=>!t.eliminated);
+  if(!finalTeam){alert('Aucun finaliste trouvé !');return;}
+  const ok=document.getElementById('s4ok');
+  ok.textContent=`🏆 GAGNANT : ${finalTeam[1].name} — ${finalTeam[1].player1} & ${finalTeam[1].player2} !`;
+  ok.classList.add('show');
+};
+
+window.endGame=async()=>{
+  if(!confirm('Terminer le jeu ?'))return;
+  await set(ref(db,'game/state'),{phase:'finished',currentStep:4});
+};
+
+// ── MANUAL ELIMINATE ─────────────────────────────────────
+window.eliminateTeam=async(id)=>{
+  if(!confirm(`Éliminer "${allTeams[id]?.name}" ?`))return;
+  await update(ref(db,`game/teams/${id}`),{eliminated:true});
+};
+
+// ── RESET ─────────────────────────────────────────────────
+window.resetGame=async()=>{
+  if(!confirm('⚠️ Réinitialiser tout le jeu ? Toutes les équipes et scores seront perdus.'))return;
+  await remove(ref(db,'game'));
+  await set(ref(db,'game/state'),{phase:'lobby',currentStep:1});
+};
+</script>
+</body>
+</html>

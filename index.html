@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Le Juste Prix Petpenoun</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--r:#C0392B;--rd:#922B21;--g:#27AE60;--or:#F39C12;--n:#1A1A1A;--s:#242424;--t:#F0E6FF;--m:#888;--w:#FFF;--rad:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',sans-serif;background:var(--n);color:var(--t);min-height:100vh}
+.app{max-width:480px;margin:0 auto;padding:0 0 80px}
+.hdr{background:linear-gradient(135deg,var(--rd),#1a0808);padding:20px 18px 16px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between}
+.hdr h1{font-family:'Bebas Neue',cursive;font-size:1.6rem;letter-spacing:2px;color:var(--w)}
+.team-bar{margin-top:10px;display:flex;align-items:center;gap:10px}
+.team-name{font-weight:700;font-size:.9rem;color:var(--or)}
+.step-indicator{display:flex;gap:4px;margin-left:auto}
+.step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2)}
+.step-dot.active{background:var(--or)}.step-dot.done{background:var(--g)}
+.card{background:var(--s);border:1px solid rgba(255,255,255,.07);border-radius:var(--rad);padding:22px;margin:16px;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.card-title{font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:2px;color:var(--or);margin-bottom:4px}
+.card-sub{font-size:.78rem;color:var(--m);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.btn{width:100%;padding:14px;border:none;border-radius:11px;font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .15s}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-red{background:linear-gradient(135deg,var(--r),var(--rd));color:var(--w)}
+.btn-gold{background:linear-gradient(135deg,var(--or),#d68910);color:#1a0a00}
+.btn-green{background:linear-gradient(135deg,#27AE60,#1e8449);color:var(--w)}
+.gap{height:12px}
+input[type=text],input[type=number]{width:100%;background:#1a1a1a;border:1.5px solid rgba(255,255,255,.12);border-radius:10px;color:var(--t);font-family:'Montserrat',sans-serif;font-size:1rem;padding:13px 16px;outline:none;transition:border-color .2s}
+input:focus{border-color:var(--or)}
+input::placeholder{color:var(--m)}
+.lbl{font-size:.78rem;font-weight:600;color:var(--m);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.alert{border-radius:10px;padding:11px 15px;font-size:.85rem;margin-top:10px;display:none}
+.alert.show{display:block}
+.alert-err{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);color:#e74c3c}
+.alert-ok{background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.35);color:#2ecc71}
+.product-card{background:linear-gradient(135deg,#2a2a2a,#1e1e1e);border:1px solid rgba(255,255,255,.1);border-radius:var(--rad);padding:20px;text-align:center;margin-bottom:16px}
+.product-emoji{font-size:4rem;margin-bottom:10px;display:block}
+.product-name{font-family:'Bebas Neue',cursive;font-size:1.4rem;letter-spacing:2px;color:var(--w);margin-bottom:4px}
+.product-desc{font-size:.78rem;color:var(--m);line-height:1.5}
+.pnum{font-size:.7rem;font-weight:700;color:var(--or);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.tw{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0}
+.tc{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.8rem;border:3px solid;transition:all .5s}
+.tg{border-color:var(--g);color:var(--g)}.to{border-color:var(--or);color:var(--or)}.tr{border-color:var(--r);color:var(--r)}
+.tlbl{font-size:.75rem;color:var(--m);letter-spacing:1px;text-transform:uppercase}
+.score-badge{background:linear-gradient(135deg,var(--or),#d68910);border-radius:10px;padding:12px 20px;text-align:center;margin-bottom:12px}
+.score-num{font-family:'Bebas Neue',cursive;font-size:3rem;color:#1a0a00;line-height:1}
+.score-lbl{font-size:.75rem;font-weight:700;color:rgba(26,10,0,.7);letter-spacing:2px;text-transform:uppercase}
+.match-grid{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.match-row{background:#1a1a1a;border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.match-emoji{font-size:1.6rem;flex-shrink:0}
+.match-name{font-size:.88rem;font-weight:600;flex:1}
+.match-sel{background:transparent;border:1px solid rgba(255,255,255,.2);border-radius:6px;color:var(--t);font-family:'Montserrat',sans-serif;font-size:.82rem;padding:4px 8px;outline:none}
+.ww{display:flex;flex-direction:column;align-items:center;padding:10px 0}
+.wc{position:relative;width:280px;height:280px;margin:0 auto 20px}
+.wp{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:2rem}
+.wr{font-family:'Bebas Neue',cursive;font-size:2.5rem;color:var(--or);text-align:center;margin:8px 0}
+.wt{font-size:.85rem;color:var(--m);text-align:center}
+.sl{background:rgba(255,255,255,.06);border-radius:8px;padding:8px 16px;text-align:center;font-size:.82rem;color:var(--m);margin-bottom:12px}
+.vg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.vi{background:#1a1a1a;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;text-align:center}
+.ve{font-size:2rem;display:block;margin-bottom:6px}
+.vn{font-size:.72rem;font-weight:600;color:var(--t);line-height:1.3}
+.vd{font-size:.68rem;color:var(--m);margin-top:2px}
+.waiting{text-align:center;padding:40px 20px}
+.wi{font-size:3.5rem;display:block;margin-bottom:16px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.waiting h3{font-family:'Bebas Neue',cursive;font-size:1.4rem;color:var(--or);letter-spacing:2px;margin-bottom:8px}
+.waiting p{font-size:.85rem;color:var(--m);line-height:1.6}
+.elim{text-align:center;padding:50px 20px}
+.elim h2{font-family:'Bebas Neue',cursive;font-size:2rem;color:var(--r);letter-spacing:3px;margin-bottom:10px}
+.status{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--m)}
+.sdot{width:7px;height:7px;border-radius:50%}
+.team-chip{background:#1a1a1a;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="hdr-top">
+      <h1>🎯 Le Juste Prix</h1>
+      <div class="status"><div class="sdot" id="sdot" style="background:#e74c3c"></div><span id="stext">Connexion…</span></div>
+    </div>
+    <div class="team-bar" id="teamBar" style="display:none">
+      <span class="team-name" id="teamNameHdr">—</span>
+      <div class="step-indicator" id="stepDots"></div>
+    </div>
+  </div>
+
+  <div id="viewRegister">
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">Créer votre équipe</div>
+      <div class="card-sub">Domaine de Petpenoun · 2026</div>
+      <div class="lbl">Nom de l'équipe</div>
+      <input type="text" id="teamName" placeholder="Ex: Les Tornadoes" maxlength="24">
+      <div class="gap"></div>
+      <div class="lbl">Joueur 1 (vous)</div>
+      <input type="text" id="player1" placeholder="Votre prénom" maxlength="20">
+      <div class="gap"></div>
+      <div class="lbl">Joueur 2</div>
+      <input type="text" id="player2" placeholder="Prénom de votre binôme" maxlength="20">
+      <div class="gap"></div>
+      <button class="btn btn-red" id="btnJoin" disabled>🚀 Rejoindre le jeu</button>
+      <div class="alert alert-err" id="regErr"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Équipes inscrites</div>
+      <div id="teamsList" style="margin-top:8px"><div style="text-align:center;color:var(--m);padding:20px;font-size:.85rem">En attente…</div></div>
+    </div>
+  </div>
+
+  <div id="viewWaiting" style="display:none">
+    <div class="waiting" style="margin-top:20px">
+      <span class="wi">⏳</span><h3>En salle d'attente</h3>
+      <p>L'organisateur va bientôt lancer le jeu.<br>Tenez-vous prêts !</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Votre équipe</div>
+      <div class="score-badge"><div class="score-num" id="waitScore">0</div><div class="score-lbl">Points</div></div>
+      <div style="font-size:.85rem;color:var(--m);text-align:center" id="waitInfo"></div>
+    </div>
+  </div>
+
+  <div id="viewStep1" style="display:none">
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Étape 1 — Devinez le prix</div>
+      <div class="card-sub">15 secondes · 10 produits</div>
+      <div id="s1Content"></div>
+    </div>
+  </div>
+
+  <div id="viewStep2" style="display:none">
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Étape 2 — Associez les prix</div>
+      <div class="card-sub">20 secondes · 8 produits</div>
+      <div id="s2Content"></div>
+    </div>
+  </div>
+
+  <div id="viewStep3" style="display:none">
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Étape 3 — La Roue</div>
+      <div class="card-sub">2 lancers · Ne dépassez pas 100 !</div>
+      <div id="s3Content"></div>
+    </div>
+  </div>
+
+  <div id="viewStep4" style="display:none">
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">🏆 La Vitrine !</div>
+      <div class="card-sub">25 secondes · Estimez le total</div>
+      <div id="s4Content"></div>
+    </div>
+  </div>
+
+  <div id="viewEliminated" style="display:none">
+    <div class="elim" style="margin-top:20px">
+      <span style="font-size:4rem;display:block;margin-bottom:20px">😔</span>
+      <h2>Éliminé !</h2>
+      <p style="color:var(--m)">Encouragez les finalistes !</p>
+    </div>
+  </div>
+
+  <div id="viewFinished" style="display:none">
+    <div class="waiting" style="margin-top:20px">
+      <span class="wi">🏆</span><h3>Jeu Terminé !</h3>
+      <p>Merci pour cette Balade Petpenoun 2026 🚴</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<script>
+const FB = {apiKey:"AIzaSyCZqCc67nk96aZxUj6WM7APLdpeWiQ1qno",authDomain:"amis-invisibles-deb66.firebaseapp.com",databaseURL:"https://amis-invisibles-deb66-default-rtdb.firebaseio.com",projectId:"amis-invisibles-deb66"};
+const PS1=[
+  {name:'Vélo de montagne adulte',emoji:'🚲',desc:'VTT 26 pouces, 21 vitesses, freins à disques',price:45000},
+  {name:'Sac à dos randonnée 40L',emoji:'🎒',desc:'Imperméable, rembourré, bretelles réglables',price:22000},
+  {name:'Casque de cyclisme adulte',emoji:'⛑️',desc:'Certifié CE, 16 évents, visière amovible',price:18500},
+  {name:'Tente camping 4 personnes',emoji:'⛺',desc:'Montage rapide, waterproof, double toit',price:55000},
+  {name:'Gourde isotherme 750ml',emoji:'🧴',desc:'Inox double paroi, froid 24h / chaud 12h',price:8900},
+  {name:'Montre GPS sport',emoji:'⌚',desc:'Suivi cardiaque, 50 sports, GPS 14h',price:55000},
+  {name:'Lampe frontale LED',emoji:'🔦',desc:'300 lumens, étanche IPX4, autonomie 8h',price:12000},
+  {name:'Matelas autogonflant',emoji:'🛏️',desc:'Épaisseur 5cm, léger 800g',price:28000},
+  {name:'Kit réparation vélo',emoji:'🔧',desc:'Démonte-pneu, rustines, pompe, multi-outil',price:9500},
+  {name:'Lunettes sport polarisées',emoji:'🕶️',desc:'UV400, verres interchangeables, TR90',price:12000},
+];
+const PS2=[
+  {name:'Sacoche vélo guidon',emoji:'👜',price:25000},{name:'Gants cyclisme',emoji:'🧤',price:7500},
+  {name:'Pompe télescopique',emoji:'💨',price:9000},{name:'Sac de couchage -10°C',emoji:'🛌',price:35000},
+  {name:'Chaussures randonnée',emoji:'👟',price:42000},{name:'Lanterne LED camping',emoji:'🏮',price:6500},
+  {name:'Couverture de survie',emoji:'🟡',price:4500},{name:'Carnet de route',emoji:'📔',price:3500},
+];
+const PV=[
+  {name:'Vélo électrique pliant',emoji:'⚡',desc:'Moteur 250W, autonomie 60km',price:180000},
+  {name:'Kit camping premium',emoji:'🏕️',desc:'Tente + sacs + matelas + lampe',price:95000},
+  {name:'Montre connectée',emoji:'⌚',desc:'GPS, cardio, saphir',price:85000},
+  {name:'Sac trekking 60L',emoji:'🎒',desc:'Armature alu, poche hydratation',price:65000},
+  {name:'Coffret bien-être',emoji:'🎁',desc:'Huiles, crèmes, kit soin',price:35000},
+];
+const WV=[0,10,20,30,40,50,60,70,80,90,100];
+const WC=['#C0392B','#E74C3C','#E67E22','#F39C12','#F1C40F','#2ECC71','#27AE60','#1ABC9C','#3498DB','#2980B9','#8E44AD'];
+
+function pts(g,r){if(!g||g<=0)return 0;const d=Math.abs(g-r)/r;if(d===0)return 5;if(d<=.05)return 4;if(d<=.1)return 3;if(d<=.2)return 2;if(d<=.35)return 1;return 0;}
+function fmtF(n){return Number(n).toLocaleString('fr-FR')+' FCFA';}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showView(id){['viewRegister','viewWaiting','viewStep1','viewStep2','viewStep3','viewStep4','viewEliminated','viewFinished'].forEach(v=>document.getElementById(v).style.display=v===id?'':'none');}
+function stepDots(s){document.getElementById('stepDots').innerHTML=[1,2,3,4].map(i=>'<div class="step-dot '+(i<s?'done':i===s?'active':'')+'"></div>').join('');}
+
+let db,myId=null,myData=null,gs={};
+let s1Idx=-1,s1Done=false,s2Done=false,s2R={},s2Rendered=false;
+let s3R=false,s3Cnt=0,s3Tot=0,s3Lock=false,s3Spin=false;
+let s4Done=false,s4Rendered=false,wAngle=0,wAnim=null,timer=null;
+
+firebase.initializeApp(FB);
+db=firebase.database();
+document.getElementById('sdot').style.background='#2ecc71';
+document.getElementById('sdot').style.boxShadow='0 0 6px #2ecc71';
+document.getElementById('stext').textContent='Connecté';
+
+db.ref('game/state').on('value',snap=>{gs=snap.val()||{};handle();});
+db.ref('game/teams').on('value',snap=>{
+  const t=snap.val()||{};
+  renderList(t);
+  if(myId&&t[myId]){
+    myData=t[myId];
+    document.getElementById('teamNameHdr').textContent=myData.name;
+    document.getElementById('waitScore').textContent=myData.score||0;
+    document.getElementById('waitInfo').textContent=(myData.player1||'')+' & '+(myData.player2||'');
+    if(myData.eliminated)showView('viewEliminated');
+  }
+});
+
+// REGISTRATION — addEventListener only, no inline handlers
+document.getElementById('teamName').addEventListener('input',chk);
+document.getElementById('player1').addEventListener('input',chk);
+document.getElementById('player2').addEventListener('input',chk);
+document.getElementById('btnJoin').addEventListener('click',join);
+
+function chk(){
+  const ok=document.getElementById('teamName').value.trim().length>1&&document.getElementById('player1').value.trim().length>1&&document.getElementById('player2').value.trim().length>1;
+  document.getElementById('btnJoin').disabled=!ok;
+}
+
+function join(){
+  const name=document.getElementById('teamName').value.trim();
+  const p1=document.getElementById('player1').value.trim();
+  const p2=document.getElementById('player2').value.trim();
+  const err=document.getElementById('regErr');
+  err.classList.remove('show');
+  db.ref('game/teams').once('value').then(snap=>{
+    const ex=snap.val()||{};
+    if(Object.values(ex).some(t=>t.name.toLowerCase()===name.toLowerCase())){
+      err.textContent='Ce nom d\'équipe est déjà pris !';err.classList.add('show');return;
+    }
+    const r=db.ref('game/teams').push();
+    myId=r.key;localStorage.setItem('jpId',myId);
+    r.set({name,player1:p1,player2:p2,score:0,eliminated:false,s1Answers:{},s2Answers:{},s2Correct:0,s3Score:0,s4Guess:0,joinedAt:Date.now()}).then(()=>{
+      document.getElementById('teamBar').style.display='flex';
+      document.getElementById('teamNameHdr').textContent=name;
+      showView('viewWaiting');
+    });
+  });
+}
+
+function renderList(teams){
+  const el=document.getElementById('teamsList');
+  const list=Object.values(teams||{});
+  if(!list.length){el.innerHTML='<div style="text-align:center;color:var(--m);padding:20px;font-size:.85rem">En attente d\'équipes…</div>';return;}
+  el.innerHTML=list.map(t=>'<div class="team-chip"><div style="font-size:1.1rem">🏁</div><div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+esc(t.name)+'</div><div style="font-size:.72rem;color:var(--m)">'+esc(t.player1||'')+' & '+esc(t.player2||'')+'</div></div>'+(t.score>0?'<div style="font-size:.8rem;font-weight:700;color:var(--or)">'+t.score+' pts</div>':'')+'</div>').join('');
+}
+
+function handle(){
+  if(!myId){showView('viewRegister');return;}
+  if(myData&&myData.eliminated){showView('viewEliminated');return;}
+  const p=gs.phase;
+  stepDots(gs.currentStep||1);
+  if(!p||p==='lobby'){showView('viewWaiting');return;}
+  if(p==='finished'){showView('viewFinished');return;}
+  if(p==='step1'){showView('viewStep1');renderS1(gs.currentProduct||0);return;}
+  if(p==='step2'){showView('viewStep2');renderS2();return;}
+  if(p==='step3'){showView('viewStep3');renderS3();return;}
+  if(p==='step4'){showView('viewStep4');renderS4();return;}
+}
+
+// STEP 1
+function renderS1(idx){
+  if(idx===s1Idx)return;
+  s1Idx=idx;s1Done=false;clearInterval(timer);
+  if(idx>=PS1.length){document.getElementById('s1Content').innerHTML='<div class="waiting"><span class="wi">✅</span><h3>Étape 1 terminée !</h3><p>En attente des résultats…</p></div>';return;}
+  const p=PS1[idx];let secs=15;
+  document.getElementById('s1Content').innerHTML='<div class="pnum">Produit '+(idx+1)+' / '+PS1.length+'</div><div class="product-card"><span class="product-emoji">'+p.emoji+'</span><div class="product-name">'+esc(p.name)+'</div><div class="product-desc">'+esc(p.desc)+'</div></div><div class="tw"><div class="tc tg" id="tc">'+secs+'</div><span class="tlbl">secondes restantes</span></div><div class="lbl">Votre estimation</div><input type="number" id="gi" placeholder="Ex: 45000" min="0"><div class="gap"></div><button class="btn btn-gold" id="bs1">✅ Valider mon prix</button><div class="alert alert-ok" id="s1ok"></div><div class="alert alert-err" id="s1er"></div>';
+  document.getElementById('bs1').addEventListener('click',()=>subS1(idx));
+  timer=setInterval(()=>{secs--;const tc=document.getElementById('tc');if(!tc){clearInterval(timer);return;}tc.textContent=secs;tc.className='tc '+(secs>8?'tg':secs>4?'to':'tr');if(secs<=0){clearInterval(timer);s1Done=true;doS1(idx,0);}},1000);
+}
+function subS1(idx){if(s1Done)return;doS1(idx,parseInt(document.getElementById('gi')?.value)||0);}
+function doS1(idx,val){
+  clearInterval(timer);s1Done=true;
+  const b=document.getElementById('bs1');if(b)b.disabled=true;
+  const p=PS1[idx],pt=pts(val,p.price);
+  db.ref('game/teams/'+myId).update({['s1Answers/'+idx]:{guess:val,points:pt,answered:true}});
+  if(val>0){const e=document.getElementById('s1ok');if(e){e.textContent='✅ '+fmtF(val)+' → '+pt+' point'+(pt!==1?'s':'');e.classList.add('show');}}
+  else{const e=document.getElementById('s1er');if(e){e.textContent='⏱ Temps écoulé ! 0 point.';e.classList.add('show');}}
+}
+
+// STEP 2
+function renderS2(){
+  if(s2Rendered)return;s2Rendered=true;s2R={};
+  const prices=PS2.map(p=>p.price).sort(()=>Math.random()-.5);let secs=20;
+  document.getElementById('s2Content').innerHTML='<p style="font-size:.82rem;color:var(--m);margin-bottom:14px">Associez chaque produit à son prix.</p><div class="tw"><div class="tc tg" id="s2tc">'+secs+'</div><span class="tlbl">secondes restantes</span></div><div class="match-grid">'+PS2.map((p,i)=>'<div class="match-row"><span class="match-emoji">'+p.emoji+'</span><div class="match-name">'+esc(p.name)+'</div><select class="match-sel" id="s2s'+i+'"><option value="">— prix —</option>'+prices.map(pr=>'<option value="'+pr+'">'+fmtF(pr)+'</option>').join('')+'</select></div>').join('')+'</div><div class="gap"></div><button class="btn btn-gold" id="bs2">✅ Valider</button><div class="alert alert-ok" id="s2ok"></div>';
+  PS2.forEach((_,i)=>document.getElementById('s2s'+i).addEventListener('change',e=>{s2R[i]=parseInt(e.target.value)||0;}));
+  document.getElementById('bs2').addEventListener('click',()=>{if(!s2Done){clearInterval(timer);s2Done=true;doS2();}});
+  timer=setInterval(()=>{secs--;const tc=document.getElementById('s2tc');if(!tc){clearInterval(timer);return;}tc.textContent=secs;tc.className='tc '+(secs>10?'tg':secs>5?'to':'tr');if(secs<=0){clearInterval(timer);if(!s2Done){s2Done=true;doS2();}}},1000);
+}
+function doS2(){
+  const b=document.getElementById('bs2');if(b)b.disabled=true;
+  let c=0;PS2.forEach((p,i)=>{if(s2R[i]===p.price)c++;});
+  db.ref('game/teams/'+myId).update({s2Answers:s2R,s2Correct:c,score:(myData?.score||0)+c*2});
+  const e=document.getElementById('s2ok');if(e){e.textContent='✅ '+c+'/'+PS2.length+' bonnes → '+(c*2)+' points !';e.classList.add('show');}
+}
+
+// STEP 3
+function renderS3(){
+  if(s3R)return;s3R=true;s3Cnt=0;s3Tot=0;s3Lock=false;
+  document.getElementById('s3Content').innerHTML='<p style="font-size:.82rem;color:var(--m);margin-bottom:14px">2 lancers. Sans dépasser 100 !<br><strong style="color:var(--or)">Dépassement = score 0 !</strong></p><div class="sl">Lancers restants : <strong id="sl">2</strong></div><div class="ww"><div class="wc"><div class="wp">▼</div><canvas id="wc" width="280" height="280" style="border-radius:50%;box-shadow:0 8px 40px rgba(0,0,0,.6)"></canvas></div><div class="wr" id="wres">—</div><div class="wt" id="wtot"></div></div><button class="btn btn-red" id="bspin">🎡 Lancer la roue</button><button class="btn btn-green" id="bstop" style="display:none;margin-top:10px">🛑 Arrêter !</button><div class="gap"></div><button class="btn btn-gold" id="bs3" style="display:none">✅ Valider mon score</button><div class="alert alert-ok" id="s3ok"></div>';
+  drawW(0);
+  document.getElementById('bspin').addEventListener('click',spinW);
+  document.getElementById('bstop').addEventListener('click',stopW);
+  document.getElementById('bs3').addEventListener('click',subS3);
+}
+function drawW(angle){
+  const cv=document.getElementById('wc');if(!cv)return;
+  const ctx=cv.getContext('2d'),cx=140,cy=140,r=130,n=WV.length,arc=2*Math.PI/n;
+  ctx.clearRect(0,0,280,280);
+  WV.forEach((v,i)=>{const s=angle+i*arc-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,s+arc);ctx.fillStyle=WC[i];ctx.fill();ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=2;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(s+arc/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 14px Montserrat,sans-serif';ctx.fillText(v,r-12,5);ctx.restore();});
+  ctx.beginPath();ctx.arc(cx,cy,18,0,2*Math.PI);ctx.fillStyle='#1a1a1a';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=2;ctx.stroke();
+}
+function spinW(){
+  if(s3Spin||s3Cnt>=2||s3Lock)return;s3Spin=true;
+  document.getElementById('bspin').style.display='none';document.getElementById('bstop').style.display='';
+  const spd=0.25+Math.random()*0.2;
+  const f=()=>{if(!s3Spin)return;wAngle+=spd;drawW(wAngle);wAnim=requestAnimationFrame(f);};f();
+}
+function stopW(){
+  if(!s3Spin)return;s3Spin=false;cancelAnimationFrame(wAnim);
+  document.getElementById('bstop').style.display='none';
+  const n=WV.length,arc=2*Math.PI/n,norm=(((-wAngle%(2*Math.PI))+(2*Math.PI))%(2*Math.PI)),idx=Math.floor(norm/arc)%n,val=WV[idx];
+  s3Cnt++;s3Tot+=val;const bust=s3Tot>100;
+  const r=document.getElementById('wres');if(r)r.textContent='+'+val;
+  const sl=document.getElementById('sl');if(sl)sl.textContent=Math.max(0,2-s3Cnt);
+  if(s3Cnt<2&&!bust){const t=document.getElementById('wtot');if(t)t.textContent='Total actuel : '+s3Tot;document.getElementById('bspin').style.display='';document.getElementById('bspin').textContent='🎡 2ème lancer';}
+  else{const t=document.getElementById('wtot');if(t)t.textContent=bust?'💥 '+s3Tot+' > 100 — Score = 0 !':'Score final : '+(bust?0:s3Tot)+' / 100';document.getElementById('bs3').style.display='';s3Lock=true;}
+}
+function subS3(){const fs=s3Tot>100?0:s3Tot;db.ref('game/teams/'+myId).update({s3Score:fs});const b=document.getElementById('bs3');if(b)b.disabled=true;const e=document.getElementById('s3ok');if(e){e.textContent='✅ Score : '+fs+' / 100';e.classList.add('show');}}
+
+// STEP 4
+function renderS4(){
+  if(s4Rendered)return;s4Rendered=true;let secs=25;
+  document.getElementById('s4Content').innerHTML='<div class="vg">'+PV.map(p=>'<div class="vi"><span class="ve">'+p.emoji+'</span><div class="vn">'+esc(p.name)+'</div><div class="vd">'+esc(p.desc)+'</div></div>').join('')+'</div><div style="background:rgba(243,156,18,.1);border:1px solid rgba(243,156,18,.3);border-radius:10px;padding:12px;text-align:center;margin:12px 0"><div style="font-size:.75rem;color:var(--or);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Total de la vitrine</div><div style="font-family:\'Bebas Neue\',cursive;font-size:2rem;color:var(--or)">??? FCFA</div></div><div class="tw"><div class="tc tg" id="s4tc">'+secs+'</div><span class="tlbl">secondes restantes</span></div><div class="lbl">Votre estimation du total</div><input type="number" id="s4gi" placeholder="Ex: 350000" min="0"><div class="gap"></div><button class="btn btn-gold" id="bs4">✅ Valider</button><div class="alert alert-ok" id="s4ok"></div><div class="alert alert-err" id="s4er"></div>';
+  document.getElementById('bs4').addEventListener('click',()=>{if(!s4Done){clearInterval(timer);const v=parseInt(document.getElementById('s4gi')?.value)||0;doS4(v);}});
+  timer=setInterval(()=>{secs--;const tc=document.getElementById('s4tc');if(!tc){clearInterval(timer);return;}tc.textContent=secs;tc.className='tc '+(secs>12?'tg':secs>6?'to':'tr');if(secs<=0){clearInterval(timer);if(!s4Done)doS4(0);}},1000);
+}
+function doS4(val){
+  s4Done=true;const b=document.getElementById('bs4');if(b)b.disabled=true;
+  db.ref('game/teams/'+myId).update({s4Guess:val});
+  if(val>0){const e=document.getElementById('s4ok');if(e){e.textContent='✅ '+fmtF(val)+' enregistré !';e.classList.add('show');}}
+  else{const e=document.getElementById('s4er');if(e){e.textContent='⏱ Temps écoulé !';e.classList.add('show');}}
+}
+
+// RESTORE SESSION
+const saved=localStorage.getItem('jpId');
+if(saved){
+  myId=saved;
+  db.ref('game/teams/'+saved).once('value').then(snap=>{
+    if(snap.exists()){myData=snap.val();document.getElementById('teamBar').style.display='flex';document.getElementById('teamNameHdr').textContent=myData.name;handle();}
+    else localStorage.removeItem('jpId');
+  });
+}
+</script>
+</body>
+</html>
