@@ -41,8 +41,10 @@ input::placeholder{color:var(--m)}
 .product-desc{font-size:.78rem;color:var(--m);line-height:1.5}
 .pnum{font-size:.7rem;font-weight:700;color:var(--or);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
 .tw{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0}
-.tc{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.8rem;border:3px solid;transition:all .5s}
-.tg{border-color:var(--g);color:var(--g)}.to{border-color:var(--or);color:var(--or)}.tr{border-color:var(--r);color:var(--r)}
+.tc{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:2rem;border:3px solid;transition:all .5s}
+.tg{border-color:var(--g);color:var(--g);box-shadow:0 0 20px rgba(39,174,96,.3)}
+.to{border-color:var(--or);color:var(--or);box-shadow:0 0 20px rgba(243,156,18,.3)}
+.tr{border-color:var(--r);color:var(--r);box-shadow:0 0 20px rgba(192,57,43,.4)}
 .tlbl{font-size:.75rem;color:var(--m);letter-spacing:1px;text-transform:uppercase}
 .score-badge{background:linear-gradient(135deg,var(--or),#d68910);border-radius:10px;padding:12px 20px;text-align:center;margin-bottom:12px}
 .score-num{font-family:'Bebas Neue',cursive;font-size:3rem;color:#1a0a00;line-height:1}
@@ -125,7 +127,7 @@ input::placeholder{color:var(--m)}
   <div id="viewStep1" style="display:none">
     <div class="card" style="margin-top:16px">
       <div class="card-title">Étape 1 — Devinez le prix</div>
-      <div class="card-sub">15 secondes · 10 produits</div>
+      <div class="card-sub">1 minute par produit · 15 produits</div>
       <div id="s1Content"></div>
     </div>
   </div>
@@ -133,7 +135,7 @@ input::placeholder{color:var(--m)}
   <div id="viewStep2" style="display:none">
     <div class="card" style="margin-top:16px">
       <div class="card-title">Étape 2 — Associez les prix</div>
-      <div class="card-sub">20 secondes · 8 produits</div>
+      <div class="card-sub">10 minutes · 8 produits</div>
       <div id="s2Content"></div>
     </div>
   </div>
@@ -157,8 +159,7 @@ input::placeholder{color:var(--m)}
   <div id="viewEliminated" style="display:none">
     <div class="elim" style="margin-top:20px">
       <span style="font-size:4rem;display:block;margin-bottom:20px">😔</span>
-      <h2>Éliminé !</h2>
-      <p style="color:var(--m)">Encouragez les finalistes !</p>
+      <h2>Éliminé !</h2><p style="color:var(--m)">Encouragez les finalistes !</p>
     </div>
   </div>
 
@@ -173,7 +174,8 @@ input::placeholder{color:var(--m)}
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 <script>
-const FB = {apiKey:"AIzaSyCZqCc67nk96aZxUj6WM7APLdpeWiQ1qno",authDomain:"amis-invisibles-deb66.firebaseapp.com",databaseURL:"https://amis-invisibles-deb66-default-rtdb.firebaseio.com",projectId:"amis-invisibles-deb66"};
+window.onload = function() {
+const FB={apiKey:"AIzaSyCZqCc67nk96aZxUj6WM7APLdpeWiQ1qno",authDomain:"amis-invisibles-deb66.firebaseapp.com",databaseURL:"https://amis-invisibles-deb66-default-rtdb.firebaseio.com",projectId:"amis-invisibles-deb66"};
 const PS1=[
   {name:'Vélo de montagne adulte',emoji:'🚲',desc:'VTT 26 pouces, 21 vitesses, freins à disques',price:45000},
   {name:'Sac à dos randonnée 40L',emoji:'🎒',desc:'Imperméable, rembourré, bretelles réglables',price:22000},
@@ -185,24 +187,35 @@ const PS1=[
   {name:'Matelas autogonflant',emoji:'🛏️',desc:'Épaisseur 5cm, léger 800g',price:28000},
   {name:'Kit réparation vélo',emoji:'🔧',desc:'Démonte-pneu, rustines, pompe, multi-outil',price:9500},
   {name:'Lunettes sport polarisées',emoji:'🕶️',desc:'UV400, verres interchangeables, TR90',price:12000},
+  {name:'Sacoche vélo guidon 10L',emoji:'👜',desc:'Imperméable, fixation guidon universelle',price:25000},
+  {name:'Sac de couchage -10°C',emoji:'🛌',desc:'Garnissage duvet synthétique, légèreté',price:35000},
+  {name:'Chaussures de randonnée',emoji:'👟',desc:'Imperméables, semelle Vibram, mi-montante',price:42000},
+  {name:'Pompe à vélo télescopique',emoji:'💨',desc:'Compatible Presta/Schrader, manomètre',price:9000},
+  {name:'Couteau suisse multifonction',emoji:'🔪',desc:'18 fonctions, manche ergonomique rouge',price:15000},
 ];
 const PS2=[
-  {name:'Sacoche vélo guidon',emoji:'👜',price:25000},{name:'Gants cyclisme',emoji:'🧤',price:7500},
+  {name:'Sacoche vélo guidon',emoji:'👜',price:25000},{name:'Gants cyclisme anti-choc',emoji:'🧤',price:7500},
   {name:'Pompe télescopique',emoji:'💨',price:9000},{name:'Sac de couchage -10°C',emoji:'🛌',price:35000},
   {name:'Chaussures randonnée',emoji:'👟',price:42000},{name:'Lanterne LED camping',emoji:'🏮',price:6500},
-  {name:'Couverture de survie',emoji:'🟡',price:4500},{name:'Carnet de route',emoji:'📔',price:3500},
+  {name:'Couverture de survie',emoji:'🟡',price:4500},{name:'Carnet de route + stylo',emoji:'📔',price:3500},
 ];
 const PV=[
   {name:'Vélo électrique pliant',emoji:'⚡',desc:'Moteur 250W, autonomie 60km',price:180000},
   {name:'Kit camping premium',emoji:'🏕️',desc:'Tente + sacs + matelas + lampe',price:95000},
-  {name:'Montre connectée',emoji:'⌚',desc:'GPS, cardio, saphir',price:85000},
-  {name:'Sac trekking 60L',emoji:'🎒',desc:'Armature alu, poche hydratation',price:65000},
-  {name:'Coffret bien-être',emoji:'🎁',desc:'Huiles, crèmes, kit soin',price:35000},
+  {name:'Montre connectée haut de gamme',emoji:'⌚',desc:'GPS, cardio, saphir',price:85000},
+  {name:'Sac trekking 60L',emoji:'🎒',desc:'Armature alu, poche hydratation 3L',price:65000},
+  {name:'Coffret bien-être aventure',emoji:'🎁',desc:'Huiles, crèmes solaires, kit soin',price:35000},
 ];
 const WV=[0,10,20,30,40,50,60,70,80,90,100];
 const WC=['#C0392B','#E74C3C','#E67E22','#F39C12','#F1C40F','#2ECC71','#27AE60','#1ABC9C','#3498DB','#2980B9','#8E44AD'];
 
-function pts(g,r){if(!g||g<=0)return 0;const d=Math.abs(g-r)/r;if(d===0)return 5;if(d<=.05)return 4;if(d<=.1)return 3;if(d<=.2)return 2;if(d<=.35)return 1;return 0;}
+// New scoring: exact=3pts, closest without exceeding=2pts, others not exceeding=1pt, over=0
+function calcPts(g,r){
+  if(!g||g<=0)return 0;
+  if(g===r)return 3;
+  if(g>r)return 0;
+  return 1; // base — 2pts awarded by admin after all answers collected
+}
 function fmtF(n){return Number(n).toLocaleString('fr-FR')+' FCFA';}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function showView(id){['viewRegister','viewWaiting','viewStep1','viewStep2','viewStep3','viewStep4','viewEliminated','viewFinished'].forEach(v=>document.getElementById(v).style.display=v===id?'':'none');}
@@ -232,7 +245,6 @@ db.ref('game/teams').on('value',snap=>{
   }
 });
 
-// REGISTRATION — addEventListener only, no inline handlers
 document.getElementById('teamName').addEventListener('input',chk);
 document.getElementById('player1').addEventListener('input',chk);
 document.getElementById('player2').addEventListener('input',chk);
@@ -242,7 +254,6 @@ function chk(){
   const ok=document.getElementById('teamName').value.trim().length>1&&document.getElementById('player1').value.trim().length>1&&document.getElementById('player2').value.trim().length>1;
   document.getElementById('btnJoin').disabled=!ok;
 }
-
 function join(){
   const name=document.getElementById('teamName').value.trim();
   const p1=document.getElementById('player1').value.trim();
@@ -252,25 +263,23 @@ function join(){
   db.ref('game/teams').once('value').then(snap=>{
     const ex=snap.val()||{};
     if(Object.values(ex).some(t=>t.name.toLowerCase()===name.toLowerCase())){
-      err.textContent='Ce nom d\'équipe est déjà pris !';err.classList.add('show');return;
+      err.textContent='Ce nom est déjà pris !';err.classList.add('show');return;
     }
     const r=db.ref('game/teams').push();
     myId=r.key;localStorage.setItem('jpId',myId);
-    r.set({name,player1:p1,player2:p2,score:0,eliminated:false,s1Answers:{},s2Answers:{},s2Correct:0,s3Score:0,s4Guess:0,joinedAt:Date.now()}).then(()=>{
+    r.set({name,player1:p1,player2:p2,score:0,eliminated:false,s1Answers:{},s2Answers:{},s2Correct:0,s3Score:0,s3Spin1:null,s3Spin2:null,s4Guess:0,joinedAt:Date.now()}).then(()=>{
       document.getElementById('teamBar').style.display='flex';
       document.getElementById('teamNameHdr').textContent=name;
       showView('viewWaiting');
     });
   });
 }
-
 function renderList(teams){
   const el=document.getElementById('teamsList');
   const list=Object.values(teams||{});
-  if(!list.length){el.innerHTML='<div style="text-align:center;color:var(--m);padding:20px;font-size:.85rem">En attente d\'équipes…</div>';return;}
+  if(!list.length){el.innerHTML='<div style="text-align:center;color:var(--m);padding:20px;font-size:.85rem">En attente…</div>';return;}
   el.innerHTML=list.map(t=>'<div class="team-chip"><div style="font-size:1.1rem">🏁</div><div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+esc(t.name)+'</div><div style="font-size:.72rem;color:var(--m)">'+esc(t.player1||'')+' & '+esc(t.player2||'')+'</div></div>'+(t.score>0?'<div style="font-size:.8rem;font-weight:700;color:var(--or)">'+t.score+' pts</div>':'')+'</div>').join('');
 }
-
 function handle(){
   if(!myId){showView('viewRegister');return;}
   if(myData&&myData.eliminated){showView('viewEliminated');return;}
@@ -284,34 +293,39 @@ function handle(){
   if(p==='step4'){showView('viewStep4');renderS4();return;}
 }
 
-// STEP 1
+// STEP 1 — 60s timer, new scoring
 function renderS1(idx){
   if(idx===s1Idx)return;
   s1Idx=idx;s1Done=false;clearInterval(timer);
   if(idx>=PS1.length){document.getElementById('s1Content').innerHTML='<div class="waiting"><span class="wi">✅</span><h3>Étape 1 terminée !</h3><p>En attente des résultats…</p></div>';return;}
-  const p=PS1[idx];let secs=15;
-  document.getElementById('s1Content').innerHTML='<div class="pnum">Produit '+(idx+1)+' / '+PS1.length+'</div><div class="product-card"><span class="product-emoji">'+p.emoji+'</span><div class="product-name">'+esc(p.name)+'</div><div class="product-desc">'+esc(p.desc)+'</div></div><div class="tw"><div class="tc tg" id="tc">'+secs+'</div><span class="tlbl">secondes restantes</span></div><div class="lbl">Votre estimation</div><input type="number" id="gi" placeholder="Ex: 45000" min="0"><div class="gap"></div><button class="btn btn-gold" id="bs1">✅ Valider mon prix</button><div class="alert alert-ok" id="s1ok"></div><div class="alert alert-err" id="s1er"></div>';
+  const p=PS1[idx];let secs=60;
+  document.getElementById('s1Content').innerHTML='<div class="pnum">Produit '+(idx+1)+' / '+PS1.length+'</div><div class="product-card"><span class="product-emoji">'+p.emoji+'</span><div class="product-name">'+esc(p.name)+'</div><div class="product-desc">'+esc(p.desc)+'</div></div><div class="tw"><div class="tc tg" id="tc">'+secs+'</div><span class="tlbl">secondes restantes</span></div><div class="lbl">Votre estimation du prix</div><input type="number" id="gi" placeholder="Ex: 45000" min="0"><div class="gap"></div><button class="btn btn-gold" id="bs1">✅ Valider mon prix</button><div class="alert alert-ok" id="s1ok"></div><div class="alert alert-err" id="s1er"></div>';
   document.getElementById('bs1').addEventListener('click',()=>subS1(idx));
-  timer=setInterval(()=>{secs--;const tc=document.getElementById('tc');if(!tc){clearInterval(timer);return;}tc.textContent=secs;tc.className='tc '+(secs>8?'tg':secs>4?'to':'tr');if(secs<=0){clearInterval(timer);s1Done=true;doS1(idx,0);}},1000);
+  timer=setInterval(()=>{secs--;const tc=document.getElementById('tc');if(!tc){clearInterval(timer);return;}tc.textContent=secs;tc.className='tc '+(secs>20?'tg':secs>10?'to':'tr');if(secs<=0){clearInterval(timer);s1Done=true;doS1(idx,0);}},1000);
 }
 function subS1(idx){if(s1Done)return;doS1(idx,parseInt(document.getElementById('gi')?.value)||0);}
 function doS1(idx,val){
   clearInterval(timer);s1Done=true;
   const b=document.getElementById('bs1');if(b)b.disabled=true;
-  const p=PS1[idx],pt=pts(val,p.price);
-  db.ref('game/teams/'+myId).update({['s1Answers/'+idx]:{guess:val,points:pt,answered:true}});
-  if(val>0){const e=document.getElementById('s1ok');if(e){e.textContent='✅ '+fmtF(val)+' → '+pt+' point'+(pt!==1?'s':'');e.classList.add('show');}}
+  const p=PS1[idx];
+  const exact=(val===p.price);
+  const over=(val>p.price);
+  const pt=exact?3:(over?0:1); // base pts; 2pts for closest awarded by admin
+  db.ref('game/teams/'+myId).update({['s1Answers/'+idx]:{guess:val,points:pt,exact,over,answered:true}});
+  if(val>0){const e=document.getElementById('s1ok');if(e){e.textContent='✅ '+fmtF(val)+' enregistré !'+(exact?' 🎯 Prix exact !':over?' ❌ Dépassé':' ✓ Sous le prix');e.classList.add('show');}}
   else{const e=document.getElementById('s1er');if(e){e.textContent='⏱ Temps écoulé ! 0 point.';e.classList.add('show');}}
 }
 
-// STEP 2
+// STEP 2 — 10 min timer
 function renderS2(){
   if(s2Rendered)return;s2Rendered=true;s2R={};
-  const prices=PS2.map(p=>p.price).sort(()=>Math.random()-.5);let secs=20;
-  document.getElementById('s2Content').innerHTML='<p style="font-size:.82rem;color:var(--m);margin-bottom:14px">Associez chaque produit à son prix.</p><div class="tw"><div class="tc tg" id="s2tc">'+secs+'</div><span class="tlbl">secondes restantes</span></div><div class="match-grid">'+PS2.map((p,i)=>'<div class="match-row"><span class="match-emoji">'+p.emoji+'</span><div class="match-name">'+esc(p.name)+'</div><select class="match-sel" id="s2s'+i+'"><option value="">— prix —</option>'+prices.map(pr=>'<option value="'+pr+'">'+fmtF(pr)+'</option>').join('')+'</select></div>').join('')+'</div><div class="gap"></div><button class="btn btn-gold" id="bs2">✅ Valider</button><div class="alert alert-ok" id="s2ok"></div>';
+  const prices=PS2.map(p=>p.price).sort(()=>Math.random()-.5);let secs=600;
+  const mm=()=>String(Math.floor(secs/60)).padStart(2,'0');
+  const ss=()=>String(secs%60).padStart(2,'0');
+  document.getElementById('s2Content').innerHTML='<p style="font-size:.82rem;color:var(--m);margin-bottom:14px">Associez chaque produit à son prix réel.</p><div class="tw"><div class="tc tg" id="s2tc" style="width:88px;height:88px;font-size:1.4rem">'+mm()+':'+ss()+'</div><span class="tlbl">restantes</span></div><div class="match-grid">'+PS2.map((p,i)=>'<div class="match-row"><span class="match-emoji">'+p.emoji+'</span><div class="match-name">'+esc(p.name)+'</div><select class="match-sel" id="s2s'+i+'"><option value="">— prix —</option>'+prices.map(pr=>'<option value="'+pr+'">'+fmtF(pr)+'</option>').join('')+'</select></div>').join('')+'</div><div class="gap"></div><button class="btn btn-gold" id="bs2">✅ Valider mes associations</button><div class="alert alert-ok" id="s2ok"></div>';
   PS2.forEach((_,i)=>document.getElementById('s2s'+i).addEventListener('change',e=>{s2R[i]=parseInt(e.target.value)||0;}));
   document.getElementById('bs2').addEventListener('click',()=>{if(!s2Done){clearInterval(timer);s2Done=true;doS2();}});
-  timer=setInterval(()=>{secs--;const tc=document.getElementById('s2tc');if(!tc){clearInterval(timer);return;}tc.textContent=secs;tc.className='tc '+(secs>10?'tg':secs>5?'to':'tr');if(secs<=0){clearInterval(timer);if(!s2Done){s2Done=true;doS2();}}},1000);
+  timer=setInterval(()=>{secs--;const tc=document.getElementById('s2tc');if(!tc){clearInterval(timer);return;}tc.textContent=mm()+':'+ss();tc.className='tc '+(secs>120?'tg':secs>30?'to':'tr');if(secs<=0){clearInterval(timer);if(!s2Done){s2Done=true;doS2();}}},1000);
 }
 function doS2(){
   const b=document.getElementById('bs2');if(b)b.disabled=true;
@@ -320,37 +334,43 @@ function doS2(){
   const e=document.getElementById('s2ok');if(e){e.textContent='✅ '+c+'/'+PS2.length+' bonnes → '+(c*2)+' points !';e.classList.add('show');}
 }
 
-// STEP 3
+// STEP 3 — wheel with spin tracking
+const WV2=[0,10,20,30,40,50,60,70,80,90,100];
+const WC2=['#C0392B','#E74C3C','#E67E22','#F39C12','#F1C40F','#2ECC71','#27AE60','#1ABC9C','#3498DB','#2980B9','#8E44AD'];
 function renderS3(){
   if(s3R)return;s3R=true;s3Cnt=0;s3Tot=0;s3Lock=false;
-  document.getElementById('s3Content').innerHTML='<p style="font-size:.82rem;color:var(--m);margin-bottom:14px">2 lancers. Sans dépasser 100 !<br><strong style="color:var(--or)">Dépassement = score 0 !</strong></p><div class="sl">Lancers restants : <strong id="sl">2</strong></div><div class="ww"><div class="wc"><div class="wp">▼</div><canvas id="wc" width="280" height="280" style="border-radius:50%;box-shadow:0 8px 40px rgba(0,0,0,.6)"></canvas></div><div class="wr" id="wres">—</div><div class="wt" id="wtot"></div></div><button class="btn btn-red" id="bspin">🎡 Lancer la roue</button><button class="btn btn-green" id="bstop" style="display:none;margin-top:10px">🛑 Arrêter !</button><div class="gap"></div><button class="btn btn-gold" id="bs3" style="display:none">✅ Valider mon score</button><div class="alert alert-ok" id="s3ok"></div>';
+  document.getElementById('s3Content').innerHTML='<p style="font-size:.82rem;color:var(--m);margin-bottom:14px">2 lancers. Additionnez sans dépasser 100 !<br><strong style="color:var(--or)">Dépassement = score 0 !</strong></p><div class="sl">Lancers restants : <strong id="sl">2</strong></div><div class="ww"><div class="wc"><div class="wp">▼</div><canvas id="wcan" width="280" height="280" style="border-radius:50%;box-shadow:0 8px 40px rgba(0,0,0,.6)"></canvas></div><div class="wr" id="wres">—</div><div class="wt" id="wtot"></div></div><button class="btn btn-red" id="bspin">🎡 Lancer la roue</button><button class="btn btn-green" id="bstop" style="display:none;margin-top:10px">🛑 Arrêter !</button><div class="gap"></div><button class="btn btn-gold" id="bs3" style="display:none">✅ Valider mon score</button><div class="alert alert-ok" id="s3ok"></div>';
   drawW(0);
   document.getElementById('bspin').addEventListener('click',spinW);
   document.getElementById('bstop').addEventListener('click',stopW);
   document.getElementById('bs3').addEventListener('click',subS3);
 }
+let wAngle2=0,wAnim2=null,s3Spinning=false;
 function drawW(angle){
-  const cv=document.getElementById('wc');if(!cv)return;
-  const ctx=cv.getContext('2d'),cx=140,cy=140,r=130,n=WV.length,arc=2*Math.PI/n;
+  const cv=document.getElementById('wcan');if(!cv)return;
+  const ctx=cv.getContext('2d'),cx=140,cy=140,r=130,n=WV2.length,arc=2*Math.PI/n;
   ctx.clearRect(0,0,280,280);
-  WV.forEach((v,i)=>{const s=angle+i*arc-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,s+arc);ctx.fillStyle=WC[i];ctx.fill();ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=2;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(s+arc/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 14px Montserrat,sans-serif';ctx.fillText(v,r-12,5);ctx.restore();});
+  WV2.forEach((v,i)=>{const s=angle+i*arc-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,s+arc);ctx.fillStyle=WC2[i];ctx.fill();ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=2;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(s+arc/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 14px Montserrat,sans-serif';ctx.fillText(v,r-12,5);ctx.restore();});
   ctx.beginPath();ctx.arc(cx,cy,18,0,2*Math.PI);ctx.fillStyle='#1a1a1a';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=2;ctx.stroke();
 }
 function spinW(){
-  if(s3Spin||s3Cnt>=2||s3Lock)return;s3Spin=true;
+  if(s3Spinning||s3Cnt>=2||s3Lock)return;s3Spinning=true;
   document.getElementById('bspin').style.display='none';document.getElementById('bstop').style.display='';
   const spd=0.25+Math.random()*0.2;
-  const f=()=>{if(!s3Spin)return;wAngle+=spd;drawW(wAngle);wAnim=requestAnimationFrame(f);};f();
+  const f=()=>{if(!s3Spinning)return;wAngle2+=spd;drawW(wAngle2);wAnim2=requestAnimationFrame(f);};f();
 }
 function stopW(){
-  if(!s3Spin)return;s3Spin=false;cancelAnimationFrame(wAnim);
+  if(!s3Spinning)return;s3Spinning=false;cancelAnimationFrame(wAnim2);
   document.getElementById('bstop').style.display='none';
-  const n=WV.length,arc=2*Math.PI/n,norm=(((-wAngle%(2*Math.PI))+(2*Math.PI))%(2*Math.PI)),idx=Math.floor(norm/arc)%n,val=WV[idx];
+  const n=WV2.length,arc=2*Math.PI/n,norm=(((-wAngle2%(2*Math.PI))+(2*Math.PI))%(2*Math.PI)),idx=Math.floor(norm/arc)%n,val=WV2[idx];
   s3Cnt++;s3Tot+=val;const bust=s3Tot>100;
   const r=document.getElementById('wres');if(r)r.textContent='+'+val;
   const sl=document.getElementById('sl');if(sl)sl.textContent=Math.max(0,2-s3Cnt);
+  // Save spin result to Firebase for admin display
+  const spinKey='s3Spin'+s3Cnt;
+  db.ref('game/teams/'+myId).update({[spinKey]:val});
   if(s3Cnt<2&&!bust){const t=document.getElementById('wtot');if(t)t.textContent='Total actuel : '+s3Tot;document.getElementById('bspin').style.display='';document.getElementById('bspin').textContent='🎡 2ème lancer';}
-  else{const t=document.getElementById('wtot');if(t)t.textContent=bust?'💥 '+s3Tot+' > 100 — Score = 0 !':'Score final : '+(bust?0:s3Tot)+' / 100';document.getElementById('bs3').style.display='';s3Lock=true;}
+  else{const fs=bust?0:s3Tot;const t=document.getElementById('wtot');if(t)t.textContent=bust?'💥 '+s3Tot+' > 100 — Score = 0 !':'Score final : '+fs+' / 100';document.getElementById('bs3').style.display='';s3Lock=true;}
 }
 function subS3(){const fs=s3Tot>100?0:s3Tot;db.ref('game/teams/'+myId).update({s3Score:fs});const b=document.getElementById('bs3');if(b)b.disabled=true;const e=document.getElementById('s3ok');if(e){e.textContent='✅ Score : '+fs+' / 100';e.classList.add('show');}}
 
@@ -368,7 +388,6 @@ function doS4(val){
   else{const e=document.getElementById('s4er');if(e){e.textContent='⏱ Temps écoulé !';e.classList.add('show');}}
 }
 
-// RESTORE SESSION
 const saved=localStorage.getItem('jpId');
 if(saved){
   myId=saved;
@@ -377,6 +396,7 @@ if(saved){
     else localStorage.removeItem('jpId');
   });
 }
+}; // end window.onload
 </script>
 </body>
 </html>
