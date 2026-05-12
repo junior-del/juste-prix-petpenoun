@@ -108,6 +108,29 @@ input:focus{border-color:var(--or)}
 .alert-err{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);color:#e74c3c}
 .alert-info{background:rgba(243,156,18,.1);border:1px solid rgba(243,156,18,.3);color:var(--or)}
 select{background:#111;border:1.5px solid rgba(255,255,255,.12);border-radius:8px;color:var(--t);font-family:'Montserrat',sans-serif;font-size:.85rem;padding:7px 12px;outline:none;cursor:pointer}
+
+/* ── DEMO MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--s);border:2px solid var(--or);border-radius:16px;padding:28px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;position:relative}
+.modal-box::-webkit-scrollbar{width:4px}
+.modal-box::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.1);border:none;border-radius:8px;color:var(--t);font-size:1.2rem;cursor:pointer;padding:4px 10px;transition:background .2s}
+.modal-close:hover{background:rgba(255,255,255,.2)}
+.modal-title{font-family:'Bebas Neue',cursive;font-size:1.8rem;letter-spacing:3px;color:var(--or);margin-bottom:4px}
+.modal-subtitle{font-size:.78rem;color:var(--m);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+.demo-step{background:var(--c);border-left:3px solid var(--or);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:10px}
+.demo-step h4{font-size:.88rem;font-weight:700;color:var(--or);margin-bottom:4px}
+.demo-step p{font-size:.82rem;color:var(--m);line-height:1.6}
+.demo-example{background:#111;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:12px;margin-top:8px;font-size:.82rem;color:var(--t)}
+.demo-example .ex-label{font-size:.68rem;color:var(--m);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.score-demo-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.score-demo-row:last-child{border-bottom:none}
+.sdemo-team{flex:1;font-size:.82rem;font-weight:600}
+.sdemo-guess{font-size:.82rem;color:var(--t);min-width:100px}
+.sdemo-pts{font-family:'Bebas Neue',cursive;font-size:1.1rem}
+.demo-btn{background:linear-gradient(135deg,rgba(243,156,18,.15),rgba(243,156,18,.08));border:1.5px solid rgba(243,156,18,.4);border-radius:8px;color:var(--or);font-family:'Montserrat',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;padding:7px 14px;transition:all .2s}
+.demo-btn:hover{background:rgba(243,156,18,.25)}
 </style>
 </head>
 <body>
@@ -155,11 +178,11 @@ select{background:#111;border:1.5px solid rgba(255,255,255,.12);border-radius:8p
         <!-- LOBBY -->
         <div id="phLobby">
           <p style="font-size:.85rem;color:var(--m);margin-bottom:14px">Attendez les 20 équipes puis lancez l'Étape 1.</p>
-          <button class="btn btn-green btn-full" id="btnStartStep1">▶ Lancer l'Étape 1</button>
+          <button class="demo-btn" style="margin-bottom:10px;width:100%" onclick="document.getElementById('demoModal1').classList.add('show')">📖 Voir les règles du jeu avant de commencer</button><button class="btn btn-green btn-full" id="btnStartStep1">▶ Lancer l'Étape 1</button>
         </div>
 
         <!-- STEP 1 -->
-        <div id="phStep1" style="display:none">
+        <div id="phStep1" style="display:none"><div style="margin-bottom:12px"><button class="demo-btn" onclick="document.getElementById('demoModal1').classList.add('show')">📖 Voir les règles & démo Étape 1</button></div>
           <p style="font-size:.8rem;color:var(--m);margin-bottom:10px">
             Produit : <strong id="s1Label" style="color:var(--or)">—</strong>
           </p>
@@ -189,7 +212,7 @@ select{background:#111;border:1.5px solid rgba(255,255,255,.12);border-radius:8p
         </div>
 
         <!-- STEP 2 -->
-        <div id="phStep2" style="display:none">
+        <div id="phStep2" style="display:none"><div style="margin-bottom:12px"><button class="demo-btn" onclick="document.getElementById('demoModal2').classList.add('show')">📖 Voir les règles & démo Étape 2</button></div>
           <div class="ctrl-title" style="margin-top:0">Articles & Prix</div>
           <div class="s2-products-grid" id="s2ProductsGrid"></div>
           <div class="btn-row">
@@ -208,7 +231,7 @@ select{background:#111;border:1.5px solid rgba(255,255,255,.12);border-radius:8p
         </div>
 
         <!-- STEP 3 -->
-        <div id="phStep3" style="display:none">
+        <div id="phStep3" style="display:none"><div style="margin-bottom:12px"><button class="demo-btn" onclick="document.getElementById('demoModal3').classList.add('show')">📖 Voir les règles & démo Étape 3</button></div>
           <p style="font-size:.82rem;color:var(--m);margin-bottom:12px">Chaque équipe lance la roue 2 fois. Meilleur score sans dépasser 100 gagne.<br><strong style="color:var(--or)">En cas d'égalité : un lancer supplémentaire.</strong></p>
           <div class="ctrl-title" style="margin-top:0">Tableau des scores — Roue</div>
           <div style="overflow-x:auto">
@@ -236,7 +259,7 @@ select{background:#111;border:1.5px solid rgba(255,255,255,.12);border-radius:8p
         </div>
 
         <!-- STEP 4 -->
-        <div id="phStep4" style="display:none">
+        <div id="phStep4" style="display:none"><div style="margin-bottom:12px"><button class="demo-btn" onclick="document.getElementById('demoModal4').classList.add('show')">📖 Voir les règles & démo Vitrine</button></div>
           <div class="vitrine-grid-a" id="vitrineGrid"></div>
           <div class="total-box">
             <span style="font-size:.7rem;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:4px">Total de la vitrine</span>
@@ -586,9 +609,150 @@ document.getElementById('btnEndGame').addEventListener('click',()=>{if(!confirm(
 
 // RESET
 document.getElementById('btnReset').addEventListener('click',()=>{
-  if(!confirm('⚠️ Réinitialiser TOUT le jeu ?'))return;
-  db.ref('game').remove().then(()=>db.ref('game/state').set({phase:'lobby',currentStep:1,currentProduct:0}));
+  if(!confirm('⚠️ Réinitialiser TOUT le jeu ?\n\nToutes les équipes et tous les scores seront effacés.'))return;
+  // Reset step by step to avoid silent failures
+  Promise.all([
+    db.ref('game/teams').remove(),
+    db.ref('game/state').set({phase:'lobby',currentStep:1,currentProduct:0})
+  ]).then(()=>{
+    allTeams={};
+    renderTeams();
+    updateStep1Answers();
+    updateStep3Table();
+    clearInterval(globalTimerInterval);
+    document.getElementById('globalTimer').style.display='none';
+    document.getElementById('s1Display').style.display='none';
+    document.getElementById('s1PriceBox').style.display='none';
+    document.getElementById('s2Results').style.display='none';
+    document.querySelector('[data-phase="lobby"]').click();
+    showAlert('s1ok','✅ Jeu réinitialisé avec succès !');
+  }).catch(e=>alert('Erreur reset : '+e.message));
 });
 </script>
+
+<!-- ══ DEMO MODAL ÉTAPE 1 ══ -->
+<div class="modal-overlay" id="demoModal1">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('demoModal1').classList.remove('show')">✕</button>
+    <div class="modal-title">🎯 Démo — Étape 1</div>
+    <div class="modal-subtitle">Devinez le prix · 15 produits · 1 minute par produit</div>
+    <div class="demo-step">
+      <h4>📋 Principe</h4>
+      <p>Un produit s'affiche sur votre écran (projeté). Chaque équipe a <strong>60 secondes</strong> pour saisir son estimation du prix sur son smartphone. Une fois le temps écoulé ou après validation, l'admin révèle le prix réel.</p>
+    </div>
+    <div class="demo-step">
+      <h4>🏆 Barème des points</h4>
+      <div class="demo-example">
+        <div class="ex-label">Exemple — Article : Vélo de montagne · Prix réel : 45 000 FCFA</div>
+        <div class="score-demo-row"><span class="sdemo-team">🎯 Équipe Alpha</span><span class="sdemo-guess">45 000 FCFA</span><span class="sdemo-pts" style="color:#2ecc71">3 pts</span><span style="font-size:.72rem;color:var(--g)">Prix EXACT !</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">🥈 Équipe Bravo</span><span class="sdemo-guess">43 500 FCFA</span><span class="sdemo-pts" style="color:var(--or)">2 pts</span><span style="font-size:.72rem;color:var(--m)">Plus proche sans dépasser</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">✓ Équipe Charlie</span><span class="sdemo-guess">38 000 FCFA</span><span class="sdemo-pts" style="color:#3498db">1 pt</span><span style="font-size:.72rem;color:var(--m)">Sous le prix, pas le plus proche</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">❌ Équipe Delta</span><span class="sdemo-guess">52 000 FCFA</span><span class="sdemo-pts" style="color:#e74c3c">0 pt</span><span style="font-size:.72rem;color:var(--r)">A dépassé le prix réel</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">⏱ Équipe Echo</span><span class="sdemo-guess">Pas répondu</span><span class="sdemo-pts" style="color:#e74c3c">0 pt</span><span style="font-size:.72rem;color:var(--m)">Temps écoulé</span></div>
+      </div>
+    </div>
+    <div class="demo-step">
+      <h4>⚙️ Déroulement pour l'organisateur</h4>
+      <p>1. Cliquez <strong>▶ Lancer l'Étape 1</strong> — le premier produit apparaît sur les smartphones et le chrono de 60s démarre sur l'écran projeté.<br>
+      2. Cliquez <strong>💰 Révéler le prix</strong> — le vrai prix s'affiche et les points sont calculés automatiquement.<br>
+      3. Cliquez <strong>▶ Suiv.</strong> pour passer au produit suivant.<br>
+      4. Après les 15 produits, cliquez <strong>❌ Éliminer 10 équipes</strong> pour ne garder que les 10 meilleures.</p>
+    </div>
+    <button class="btn btn-gold btn-full" style="margin-top:10px" onclick="document.getElementById('demoModal1').classList.remove('show')">✅ J'ai compris — Fermer</button>
+  </div>
+</div>
+
+<!-- ══ DEMO MODAL ÉTAPE 2 ══ -->
+<div class="modal-overlay" id="demoModal2">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('demoModal2').classList.remove('show')">✕</button>
+    <div class="modal-title">🔀 Démo — Étape 2</div>
+    <div class="modal-subtitle">Associez les prix · 8 produits · 10 minutes</div>
+    <div class="demo-step">
+      <h4>📋 Principe</h4>
+      <p>8 produits sont affichés sur le smartphone des joueurs. En face de chaque produit, un menu déroulant propose les 8 prix dans le désordre. Chaque équipe doit associer chaque produit à son prix réel en 10 minutes.</p>
+    </div>
+    <div class="demo-step">
+      <h4>🏆 Barème</h4>
+      <div class="demo-example">
+        <div class="ex-label">Scoring — 2 points par bonne association</div>
+        <div class="score-demo-row"><span class="sdemo-team">Équipe avec 6/8 bonnes</span><span class="sdemo-guess"></span><span class="sdemo-pts" style="color:var(--or)">12 pts</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">Équipe avec 4/8 bonnes</span><span class="sdemo-guess"></span><span class="sdemo-pts" style="color:#3498db">8 pts</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">Équipe avec 0/8 bonnes</span><span class="sdemo-guess"></span><span class="sdemo-pts" style="color:#e74c3c">0 pt</span></div>
+      </div>
+    </div>
+    <div class="demo-step">
+      <h4>⚙️ Déroulement pour l'organisateur</h4>
+      <p>1. Les produits sont affichés sur l'écran projeté (prix masqués).<br>
+      2. Cliquez <strong>⏱ Lancer chrono</strong> — le compte à rebours de 10 min démarre sur la projection.<br>
+      3. À la fin du temps, cliquez <strong>👁 Révéler les prix</strong> pour afficher tous les vrais prix.<br>
+      4. Cliquez <strong>📊 Résultats</strong> pour voir les scores de chaque équipe.<br>
+      5. Cliquez <strong>❌ Éliminer 5 équipes</strong> pour ne garder que les 5 meilleures.</p>
+    </div>
+    <button class="btn btn-gold btn-full" style="margin-top:10px" onclick="document.getElementById('demoModal2').classList.remove('show')">✅ J'ai compris — Fermer</button>
+  </div>
+</div>
+
+<!-- ══ DEMO MODAL ÉTAPE 3 ══ -->
+<div class="modal-overlay" id="demoModal3">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('demoModal3').classList.remove('show')">✕</button>
+    <div class="modal-title">🎡 Démo — Étape 3</div>
+    <div class="modal-subtitle">La Roue · 2 lancers · Ne pas dépasser 100</div>
+    <div class="demo-step">
+      <h4>📋 Principe</h4>
+      <p>Chaque équipe dispose d'une roue numérotée de 0 à 100 (par pas de 10) sur son smartphone. Chaque équipe lance la roue <strong>2 fois</strong> et additionne ses résultats. L'objectif est d'obtenir le total le plus élevé <strong>sans dépasser 100</strong>.</p>
+    </div>
+    <div class="demo-step">
+      <h4>🏆 Exemples de parties</h4>
+      <div class="demo-example">
+        <div class="ex-label">Résultats des 5 équipes</div>
+        <div class="score-demo-row"><span class="sdemo-team">🥇 Équipe Alpha</span><span style="font-size:.8rem;color:var(--m)">Lancer 1: 60 · Lancer 2: 30</span><span class="sdemo-pts" style="color:#2ecc71">90 pts ✅</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">🥈 Équipe Bravo</span><span style="font-size:.8rem;color:var(--m)">Lancer 1: 70 · Lancer 2: 20</span><span class="sdemo-pts" style="color:var(--or)">90 pts ✅</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">3 Équipe Charlie</span><span style="font-size:.8rem;color:var(--m)">Lancer 1: 50 · Lancer 2: 30</span><span class="sdemo-pts" style="color:#3498db">80 pts ✅</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">❌ Équipe Delta</span><span style="font-size:.8rem;color:var(--m)">Lancer 1: 80 · Lancer 2: 30</span><span class="sdemo-pts" style="color:#e74c3c">0 pt 💥</span><span style="font-size:.7rem;color:var(--r)">Dépassé 100 !</span></div>
+        <div class="score-demo-row" style="background:rgba(243,156,18,.08)"><span class="sdemo-team">🔄 Égalité Alpha/Bravo</span><span style="font-size:.8rem;color:var(--or)">→ 1 lancer bonus chacun</span><span class="sdemo-pts" style="color:var(--or)">départage</span></div>
+      </div>
+    </div>
+    <div class="demo-step">
+      <h4>⚙️ Déroulement pour l'organisateur</h4>
+      <p>1. Les équipes lancent la roue depuis leur smartphone — les résultats s'affichent en direct dans le tableau de l'admin.<br>
+      2. Si <strong>égalité</strong> : cliquez <strong>🔄 Autoriser relancer</strong> — seules les équipes à égalité peuvent lancer une 3ème fois.<br>
+      3. Quand il n'y a plus d'égalité : cliquez <strong>🏆 Garder le meilleur</strong> pour éliminer toutes les autres équipes.<br>
+      4. Cliquez <strong>→ La Vitrine</strong> pour passer à la finale.</p>
+    </div>
+    <button class="btn btn-gold btn-full" style="margin-top:10px" onclick="document.getElementById('demoModal3').classList.remove('show')">✅ J'ai compris — Fermer</button>
+  </div>
+</div>
+
+<!-- ══ DEMO MODAL ÉTAPE 4 ══ -->
+<div class="modal-overlay" id="demoModal4">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('demoModal4').classList.remove('show')">✕</button>
+    <div class="modal-title">🏆 Démo — La Vitrine</div>
+    <div class="modal-subtitle">Finale · 5 produits · 25 secondes</div>
+    <div class="demo-step">
+      <h4>📋 Principe</h4>
+      <p>L'équipe finaliste voit 5 produits sur son smartphone et doit estimer le <strong>prix total de la vitrine</strong> en <strong>25 secondes</strong>. L'objectif est de donner le prix le plus proche du vrai total <strong>sans le dépasser</strong>.</p>
+    </div>
+    <div class="demo-step">
+      <h4>🏆 Résultats possibles</h4>
+      <div class="demo-example">
+        <div class="ex-label">Total réel de la vitrine : 460 000 FCFA</div>
+        <div class="score-demo-row"><span class="sdemo-team">✅ Estimation : 450 000 FCFA</span><span class="sdemo-pts" style="color:#2ecc71">GAGNANT 🏆</span><span style="font-size:.72rem;color:var(--m)">Sous le prix → victoire !</span></div>
+        <div class="score-demo-row"><span class="sdemo-team">❌ Estimation : 480 000 FCFA</span><span class="sdemo-pts" style="color:#e74c3c">PERDU</span><span style="font-size:.72rem;color:var(--r)">Dépassé → éliminé</span></div>
+      </div>
+    </div>
+    <div class="demo-step">
+      <h4>⚙️ Déroulement pour l'organisateur</h4>
+      <p>1. Les 5 produits de la vitrine sont affichés sur l'écran projeté et sur le smartphone du finaliste.<br>
+      2. Le chrono de 25 secondes démarre automatiquement sur le smartphone.<br>
+      3. L'estimation du finaliste apparaît en temps réel sur votre tableau de bord admin.<br>
+      4. Cliquez <strong>💰 Révéler le total</strong> pour afficher le vrai prix de la vitrine à tout le monde.<br>
+      5. Cliquez <strong>🏆 Déclarer gagnant</strong> si l'estimation est valide.</p>
+    </div>
+    <button class="btn btn-gold btn-full" style="margin-top:10px" onclick="document.getElementById('demoModal4').classList.remove('show')">✅ J'ai compris — Fermer</button>
+  </div>
+</div>
 </body>
 </html>
